@@ -3,5 +3,6 @@
 class Node{
     int diskSize, diskUsed;
 public:
-    Node(int);
+    Node(int size);
+    void diskWrite(int writeSize);
 }
