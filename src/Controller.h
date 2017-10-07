@@ -7,17 +7,19 @@
 #include <iostream>
 #include <vector>
 
+
 class Controller {    
     public:
 
         /*PUBLIC FUNCTION DECLARATIONS*/
+        Controller(int n);
 
     private:
         int numNodes;
-        vector<thread> nodepool;
+        std::vector<int> nodepool;
 
         /* PRIVATE FUNCTION DECLARATIONS */
-        bool spawnNodes(int n); 
-}
+        void spawnNodes(int n);
+};
 
 #endif
