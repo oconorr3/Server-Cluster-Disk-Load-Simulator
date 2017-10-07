@@ -7,15 +7,13 @@
 #include <iostream>
 #include <vector>
 
-class Controller {
-    int numNodes;
-
-    
+class Controller {    
     public:
 
         /*PUBLIC FUNCTION DECLARATIONS*/
 
     private:
+        int numNodes;
         vector<thread> nodepool;
 
         /* PRIVATE FUNCTION DECLARATIONS */
