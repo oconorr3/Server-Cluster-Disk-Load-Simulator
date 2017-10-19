@@ -16,7 +16,7 @@
 class Controller {    
     public:
         /* CONSTRUCTORS */
-        Controller(int threads, int nodes, int nodeSize);
+        Controller(int threads, int nodes, int nSize);
 
         /* PUBLIC FUNCTION DECLARATIONS */
         void addEvent(Event event);     // Adds an event to the taskQueue for the controller
