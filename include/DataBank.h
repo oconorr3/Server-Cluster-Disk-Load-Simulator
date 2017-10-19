@@ -10,10 +10,12 @@ class DataBank {
 		/*Public Function Declarations*/
 		DataBank(int numberOfNodes);
 		reportLoad(int data);
-
+		
 	private:
 		int timeStepCounter;
 		std::vector<int> *nodeLoadData;
-}
+};
+
+
 
 #endif
