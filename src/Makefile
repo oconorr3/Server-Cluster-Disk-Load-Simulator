@@ -1,6 +1,6 @@
-CXXFILES = Controller.cpp Node.cpp
+CXXFILES = Controller.cpp Node.cpp Event.cpp
 
-CXXFLAGS = -o simulator -I../include -I./ -std=c++11
+CXXFLAGS = -o simulator -I../include -I./ -std=c++11 -Wall
 LIBS = -lpthread
 
 all:

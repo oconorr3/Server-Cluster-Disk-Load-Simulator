@@ -14,6 +14,6 @@ class DataBank {
 	private:
 		int timeStepCounter;
 		std:vector<std:list<int>> nodeLoadData;
-}
+};
 
 #endif
