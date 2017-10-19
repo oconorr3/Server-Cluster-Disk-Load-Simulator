@@ -16,7 +16,7 @@
 class Controller {    
     public:
         /* CONSTRUCTORS */
-        Controller(int threads, int nodes);
+        Controller(int threads, int nodes, int nodeSize);
 
         /* PUBLIC FUNCTION DECLARATIONS */
         void addEvent(Event event);     // Adds an event to the taskQueue for the controller
@@ -26,12 +26,14 @@ class Controller {
     private:
         int numNodes;                   // Number of nodes to be simulated by the controller
         int numThreads;                 // Number of threads to be used by the controller
-        Node nodes[];                   // Array of node objects managed by the controller
+        int nodeSize;                   // The size (in bytes) of th disk capacity for a node
+        std::vector<Node> nodeList;     // Vector of nodes tracked by the controller. Populated by spawnNodes()
         std::vector<std::thread> tpool; // Tracks the threads used by the Controller to track nodes
         std::queue<Event> taskQueue;    // Queue of tasks that the controller must distribute/manage
 
         /* PRIVATE FUNCTION DECLARATIONS */
         void spawnThreads();            // spawns the threads that manage the nodes
+        void spawnNodes();              // creates all nodes that are tracked by the controller
 };
 
 #endif

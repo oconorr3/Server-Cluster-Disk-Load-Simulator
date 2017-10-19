@@ -8,7 +8,7 @@
 // Defines the Node class
 class Node {
 public:
-    Node(int size, int number);
+    Node(int size, int id);
     void processEvent(Event event);
 
 
@@ -16,7 +16,7 @@ private:
     /* PRIVATE VARIABLE DECLARATIONS */
     int diskSize;   
     int diskUsed;
-    int nodeNum;
+    int nodeID;
     std::list<int> filesOnDisk;
 
     /* PRIVATE FUNCTION DECLARATIONS */
