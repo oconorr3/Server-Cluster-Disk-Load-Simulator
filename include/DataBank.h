@@ -10,7 +10,9 @@ class DataBank {
 		/*Public Function Declarations*/
 		DataBank(int numberOfNodes);
 		reportLoad(int data);
-		
+		graphDataDynamically();
+		graphData();
+				
 	private:
 		int timeStepCounter;
 		std::vector<int> *nodeLoadData;
