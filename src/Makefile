@@ -1,7 +1,7 @@
-CXXFILES = Controller.cpp 
+CXXFILES = Controller.cpp Node.cpp
 
-CXXFLAGS = -o simulator -L../lib/ -I./ -std=c++11
-LIBS = -l../lib/libPocoFoundation.so.49 -lpthread
+CXXFLAGS = -o simulator -I../include -I./ -std=c++11
+LIBS = -lpthread
 
 all:
 	g++ $(CXXFILES) $(CXXFLAGS) $(LIBS)

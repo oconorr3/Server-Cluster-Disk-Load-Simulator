@@ -1,17 +1,19 @@
+// Author: Justin P. Finger
+// Last Update: 10/18/2017
+
 #include "Controller.h"
 #include "Node.h"
 
-#include "Poco/Runnable.h"
-
-Controller::Controller(int n) {
-
-    nodepool.push_back(4);
-    // Spawn our node instances as separate threads, track them in nodepool
-    for (int i = 0; i < n; i++) {
-        //Node *a = new Node(4, i);
-       // nodepool.pushback(thread(a.run, NULL));
-    }
-    
+/**
+*   Constructor for a Controller
+*   
+*   PARAMETERS:
+*       threads - the number of threads to be used by the controller
+*       nodes   - the number of nodes that the controller will simulate
+**/
+Controller::Controller(int threads, int nodes) {
+    numThreads  = threads; // Track number of threads
+    numNodes    = nodes;   // Track number of nodes
 }
 
 int main() {
