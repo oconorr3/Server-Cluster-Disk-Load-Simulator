@@ -4,10 +4,12 @@
 // Header for the Controller. This class will be in charge of creating threads and assigning
 // loads to the threads
 
+#include <condition_variable>
 #include <iostream>
+#include <mutex>
+#include <queue>
 #include <thread>
 #include <vector>
-#include <queue>
 
 #include "event.h"
 #include "node.h"
@@ -21,15 +23,21 @@ class Controller {
         /* PUBLIC FUNCTION DECLARATIONS */
         void addEvent(Event event);     // Adds an event to the taskQueue for the controller
         int getNumNodes();              // Returns the number of nodes 
+        void shutdownController();
+        void printNodeValues();
 
 
     private:
+        bool shutdown;
         int numNodes;                   // Number of nodes to be simulated by the controller
         int numThreads;                 // Number of threads to be used by the controller
         int nodeSize;                   // The size (in bytes) of th disk capacity for a node
         Node * nodeList;                // Pointer to array of nodes tracked by the controller. Populated by spawnNodes()
         std::vector<std::thread> tpool; // Tracks the threads used by the Controller to track nodes
         std::queue<Event> taskQueue;    // Queue of tasks that the controller must distribute/manage
+        std::mutex lk;
+        std::condition_variable cv;
+        
 
         /* PRIVATE FUNCTION DECLARATIONS */
         void spawnThreads();            // spawns the threads that manage the nodes

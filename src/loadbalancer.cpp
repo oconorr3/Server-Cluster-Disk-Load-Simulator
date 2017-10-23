@@ -29,10 +29,3 @@ int LoadBalancer::getRandomNodeId() {
 	return rand() % numNodes;
 }
 
-
-
-// int main() {
-// 	LoadBalancer lb(BENCHMARK_RANDOM, 1, 2, 1024);
-// 	lb.createEvent(256, DISKREAD);
-// 	return 1;
-// }

@@ -3,6 +3,10 @@
 #include<iostream>
 #include "controller.h"
 
+
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
+
 /**
 *   Constructor for a Controller
 *   
@@ -15,11 +19,22 @@ Controller::Controller(int numThreads, int numNodes, int nodeSize) {
     this->numThreads  = numThreads; // Track number of threads
     this->numNodes    = numNodes;   // Track number of nodes
     this->nodeSize    = nodeSize;
-
+    shutdown = false;
+    
     // Create Nodes
     spawnNodes();
     // Create Threads
     spawnThreads();
+}
+
+/**
+*   Adds an event to the controller's queue of events.
+**/
+void Controller::addEvent(Event event) {
+    std::unique_lock<std::mutex> queuelock(Controller::lk);
+    taskQueue.push(event);
+    //queuelock.unlock();
+    cv.notify_all();
 }
 
 /**
@@ -29,11 +44,18 @@ int Controller::getNumNodes() {
     return numNodes;
 }
 
-/**
-*   Adds an event to the controller's queue of events.
-**/
-void Controller::addEvent(Event event) {
-	taskQueue.push(event);
+
+void Controller::shutdownController() {
+    std::unique_lock<std::mutex> queuelock(Controller::lk);
+    while (!taskQueue.empty()) {
+        cv.wait(queuelock);
+    }
+    queuelock.unlock();
+    shutdown = true;
+    cv.notify_all();
+    for (int i = 0; i < numThreads; i++) {
+        tpool.at(i).join();
+    }
 }
 
 /**
@@ -43,7 +65,7 @@ void Controller::spawnNodes() {
     nodeList = new Node[numNodes];
     // Initialize values of the nodes in nList
     for (int i = 0; i < numNodes; i++) {
-        nodeList[i].instantiateNode(numNodes, nodeSize);
+        nodeList[i].instantiateNode(nodeSize, i);
     }
 }
 
@@ -69,16 +91,64 @@ void Controller::spawnThreads() {
 
 
 void Controller::managerThread(int nodeRangeStart, int nodeRangeEnd) {
-    std::cout << "\n" << nodeRangeEnd << std::endl;
-    while (true) {
+    // Create a lock for mutex lk
+    std::unique_lock<std::mutex> queuelock(Controller::lk, std::defer_lock);
+    bool taskAcquired = false;
 
+    Event * event = (Event *) calloc(1, sizeof(Event));
+
+    while (!shutdown) {
+        queuelock.lock();
+        //Wait until there is work to do
+        while (!taskAcquired && !shutdown) {
+            // If task queue is empty, there is no work to do
+            if (!taskQueue.empty()) {
+                
+                event->copyValues(taskQueue.front());
+                // If task at the top of the queue is for a node managed by this thread, grab it.
+                if (event->getNodeID() >= nodeRangeStart && event->getNodeID() <= nodeRangeEnd) {
+                    taskQueue.pop();
+                    taskAcquired = true;
+                    cv.notify_all();
+                }
+            }
+            if (!taskAcquired) {
+                cv.wait(queuelock);
+            }
+        }
+        queuelock.unlock();
+        taskAcquired = false;
+
+        if (!shutdown) { 
+            // pass command to node
+            nodeList[event->getNodeID()].processEvent(*event);
+        }
+    }
+    free(event);
+}
+
+void Controller::printNodeValues() {
+    for (int i = 0; i < numNodes; i++) {
+        std::cout << nodeList[i].getDiskUsed() << std::endl;
     }
 }
 
 // Temporary main for compilation
 int main() {
-    Controller c(3, 10000, 1);
-    while (true) {
-
-    }
+    Controller c(4, 9, 500);
+    //NOTE CHECK IF NUMTHREAD > NUMNODE
+    std::this_thread::sleep_for (std::chrono::seconds(1));
+    c.addEvent((Event(50, 0, DISKWRITE)));
+    c.addEvent((Event(55, 1, DISKWRITE)));
+    c.addEvent((Event(60, 2, DISKWRITE)));
+    c.addEvent((Event(65, 3, DISKWRITE)));
+    c.addEvent((Event(70, 4, DISKWRITE)));
+    c.addEvent((Event(75, 5, DISKWRITE)));
+    c.addEvent((Event(80, 6, DISKWRITE)));
+    c.addEvent((Event(420, 7, DISKWRITE)));
+    c.addEvent((Event(300, 8, DISKWRITE)));
+    c.addEvent((Event(50, 1, DISKWRITE)));
+    //std::this_thread::sleep_for (std::chrono::seconds(5));
+    c.shutdownController();
+    c.printNodeValues();
 }

@@ -29,6 +29,10 @@ class Event {
         **/
         int getEventSize();
 
+        int getNodeID();
+
+        void copyValues(Event e);
+
         /**
         Returns the type of the event (DISKREAD or DISKWRITE)
         **/

@@ -15,7 +15,7 @@
 Event::Event(int bytes, int node, EventType eventType) {
     size_b = bytes;
     nodeID = node;
-    type   = type;   
+    type   = eventType;   
 }
 
 /**
@@ -30,4 +30,14 @@ int Event::getEventSize() {
 **/
 EventType Event::getEventType() {
     return type;
+}
+
+int Event::getNodeID() {
+    return nodeID;
+}
+
+void Event::copyValues(Event e) {
+    size_b = e.getEventSize();
+    nodeID = e.getNodeID();
+    type = e.getEventType();
 }

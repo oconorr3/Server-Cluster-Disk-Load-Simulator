@@ -71,3 +71,7 @@ bool Node::processDiskWrite(int size) {
     filesOnDisk.push_back(size);
     return true;
 }
+
+int Node::getDiskUsed() {
+    return diskUsed;
+}

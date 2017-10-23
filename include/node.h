@@ -20,6 +20,8 @@ public:
     **/
     bool processEvent(Event event);
 
+    int getDiskUsed();
+
 
 private:
     /* PRIVATE VARIABLE DECLARATIONS */
