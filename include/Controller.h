@@ -34,6 +34,8 @@ class Controller {
         /* PRIVATE FUNCTION DECLARATIONS */
         void spawnThreads();            // spawns the threads that manage the nodes
         void spawnNodes();              // creates all nodes that are tracked by the controller
+
+        void managerThread(int nodeRangeStart, int nodeRangeEnd);
 };
 
 #endif
