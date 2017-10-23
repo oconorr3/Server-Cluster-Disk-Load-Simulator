@@ -1,4 +1,4 @@
-#include "../include/DataBank.h"
+#include "databank.h"
 
 DataBank::DataBank(int numNodes, int interval)  {
 	

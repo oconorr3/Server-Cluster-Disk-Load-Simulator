@@ -9,14 +9,14 @@
 #include <vector>
 #include <queue>
 
-#include "Event.h"
-#include "Node.h"
+#include "event.h"
+#include "node.h"
 
 // Definition of the Controller Class
 class Controller {    
     public:
         /* CONSTRUCTORS */
-        Controller(int threads, int nodes, int nSize);
+        Controller(int numThreads, int numNodes, int nodeSize);
 
         /* PUBLIC FUNCTION DECLARATIONS */
         void addEvent(Event event);     // Adds an event to the taskQueue for the controller
@@ -27,7 +27,7 @@ class Controller {
         int numNodes;                   // Number of nodes to be simulated by the controller
         int numThreads;                 // Number of threads to be used by the controller
         int nodeSize;                   // The size (in bytes) of th disk capacity for a node
-        Node * nlist;                   // Pointer to array of nodes tracked by the controller. Populated by spawnNodes()
+        Node * nodeList;                // Pointer to array of nodes tracked by the controller. Populated by spawnNodes()
         std::vector<std::thread> tpool; // Tracks the threads used by the Controller to track nodes
         std::queue<Event> taskQueue;    // Queue of tasks that the controller must distribute/manage
 

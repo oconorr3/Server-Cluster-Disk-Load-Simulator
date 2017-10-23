@@ -1,4 +1,4 @@
-#include "../include/LoadBalancer.h"
+#include "loadbalancer.h"
 
 
  //Controller(int threads, int nodes, int nSize);

@@ -1,7 +1,7 @@
 // Author: Justin Finger
 // Last Update: 10/19/2017
 
-#include "../include/Event.h"
+#include "event.h"
 
 /**
     Constructor for an Event object. Event objects define a disk read or write

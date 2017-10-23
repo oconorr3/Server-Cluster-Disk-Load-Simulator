@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../include/Node.h"
+#include "node.h"
 
 Node::Node(int size, int id) {
     diskSize = size;

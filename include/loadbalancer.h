@@ -4,8 +4,8 @@
 #include <stdio.h>     
 #include <stdlib.h>
 
-#include "Event.h"
-#include "Controller.h"
+#include "event.h"
+#include "controller.h"
 
 
 //Enum for balancing type ... add types for new benchmark algorithms
