@@ -1,8 +1,8 @@
 // Author: Justin P. Finger
 // Last Update: 10/18/2017
 
-#include "Controller.h"
-#include "Node.h"
+#include "../include/Controller.h"
+#include "../include/Node.h"
 
 /**
 *   Constructor for a Controller
@@ -21,6 +21,9 @@ Controller::Controller(int threads, int nodes, int nSize) {
     spawnThreads();
 }
 
+void Controller::addEvent(Event event) {
+	taskQueue.push(event);
+}
 
 /**
 *   Creates Node instances and stores them in the vector nodeList
@@ -55,5 +58,6 @@ int main() {
     while (true) {
 
     }
+/*int main() {
     return 0;
-}
+}*/
