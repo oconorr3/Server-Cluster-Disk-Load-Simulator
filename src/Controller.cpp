@@ -1,8 +1,8 @@
 // Author: Justin P. Finger
 // Last Update: 10/18/2017
 
-#include "Controller.h"
-#include "Node.h"
+#include "../include/Controller.h"
+#include "../include/Node.h"
 
 /**
 *   Constructor for a Controller
@@ -20,6 +20,9 @@ Controller::Controller(int threads, int nodes, int nSize) {
     spawnNodes();
 }
 
+void Controller::addEvent(Event event) {
+	taskQueue.push(event);
+}
 
 
 void Controller::spawnNodes() {
@@ -33,6 +36,6 @@ void Controller::spawnThreads() {
 }
 
 // Temporary main for compilation
-int main() {
+/*int main() {
     return 0;
-}
+}*/

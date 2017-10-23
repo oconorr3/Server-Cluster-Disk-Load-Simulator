@@ -3,7 +3,7 @@
 
 #include <list>
 
-#include <Event.h>
+#include "Event.h"
 
 // Defines the Node class
 class Node {
