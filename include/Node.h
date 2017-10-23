@@ -16,7 +16,7 @@ public:
 
     NOTE: this could be changed to a bool to handle requests bigger than total disk size
     **/
-    void processEvent(Event event);
+    bool processEvent(Event event);
 
 
 private:
@@ -27,9 +27,9 @@ private:
     std::list<int> filesOnDisk;     // List of previous write sizes still stored on the disk
 
     /* PRIVATE FUNCTION DECLARATIONS */
-    void runLRU();                  // Clears space on the disk using LRU
-    void processDiskRead();         // Not sure what we want to do for reads yet.
-    void processDiskWrite(int size);// Increment counter of disk space, update filesOnDisk, call LRU if not enough space
+    void runLRU(int size);                  // Clears space on the disk using LRU
+    bool processDiskRead();         // Not sure what we want to do for reads yet.
+    bool processDiskWrite(int size);// Increment counter of disk space, update filesOnDisk, call LRU if not enough space
 
 
 };
