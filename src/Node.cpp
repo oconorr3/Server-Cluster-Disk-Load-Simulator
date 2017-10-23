@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "../include/Node.h"
 
 Node::Node(int size, int id) {
@@ -5,13 +7,17 @@ Node::Node(int size, int id) {
     nodeID = id;
 }
 
+void Node::instantiateNode(int size, int id) {
+    diskSize = size;
+    nodeID = id;
+}
 /**
  * Determine which function to call based on type of event
  */
 bool Node::processEvent(Event event) {
     // Might be necessary to check whether event ID
     // matches Node id, currently no way to get event id
-    enum EventType type = event.getEventType()
+    enum EventType type = event.getEventType();
     if (type == DISKREAD) {
         return processDiskRead();
     }
@@ -36,7 +42,8 @@ void Node::runLRU(int size) {
     }
     // Remove previous requests using LRU until previous condition is met
     while (spaceNeeded > (diskSize - diskUsed)) {
-        removedValue = filesOnDisk.pop_front();
+        int removedValue = filesOnDisk.front();
+        filesOnDisk.pop_front();
         diskUsed -= removedValue;
     }
 }

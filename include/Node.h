@@ -8,8 +8,10 @@
 // Defines the Node class
 class Node {
 public:
+    Node() { }; // Default Constructor
     Node(int size, int id);
 
+    void instantiateNode(int size, int id);
     /**
     Determines if the event is a disk read or write, and calls the appropriate
     private methods to handle that type. 

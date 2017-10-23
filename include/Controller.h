@@ -27,7 +27,7 @@ class Controller {
         int numNodes;                   // Number of nodes to be simulated by the controller
         int numThreads;                 // Number of threads to be used by the controller
         int nodeSize;                   // The size (in bytes) of th disk capacity for a node
-        std::vector<Node> nodeList;     // Vector of nodes tracked by the controller. Populated by spawnNodes()
+        Node * nlist;                   // Pointer to array of nodes tracked by the controller. Populated by spawnNodes()
         std::vector<std::thread> tpool; // Tracks the threads used by the Controller to track nodes
         std::queue<Event> taskQueue;    // Queue of tasks that the controller must distribute/manage
 

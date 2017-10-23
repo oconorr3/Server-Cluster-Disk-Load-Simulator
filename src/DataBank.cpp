@@ -28,7 +28,7 @@ void DataBank::printData() {
 		std::vector<int> iNode = nodeLoadData[i];
 		
 		std::cout << "Node " << i << " data: ";
-		for (int j = 0; j < iNode.size(); j++) {
+		for (int j = 0; j < (int)iNode.size(); j++) {
 			std::cout << iNode[j] << "\t";
 		}
 		std::cout << "\n";
@@ -88,23 +88,23 @@ void DataBank::graphData() {
 }
 
 
-int main() {
-	DataBank dataBank(2, 5);
+// int main() {
+// 	DataBank dataBank(2, 5);
 	
-	//add some stuff to node0 list
-	for (int i = 0; i < 10; i++) {
-		dataBank.reportLoad(0, i * 1);
-	}
+// 	//add some stuff to node0 list
+// 	for (int i = 0; i < 10; i++) {
+// 		dataBank.reportLoad(0, i * 1);
+// 	}
 	
-	//add some stuff to node1 list
-	for (int i = 0; i < 10; i++) {
-		dataBank.reportLoad(1, i * 2);
-	}
+// 	//add some stuff to node1 list
+// 	for (int i = 0; i < 10; i++) {
+// 		dataBank.reportLoad(1, i * 2);
+// 	}
 	
 	
 	
-	dataBank.printData();
+// 	dataBank.printData();
 	
-	dataBank.graphData();
-	return 0;
-}
+// 	dataBank.graphData();
+// 	return 0;
+// }
