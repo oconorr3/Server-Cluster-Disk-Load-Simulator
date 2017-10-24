@@ -23,8 +23,8 @@ class Controller {
         /* PUBLIC FUNCTION DECLARATIONS */
         void addEvent(Event event);     // Adds an event to the taskQueue for the controller
         int getNumNodes();              // Returns the number of nodes 
-        void shutdownController();
-        void printNodeValues();
+        void shutdownController();      // Joins all threads used by the controller once they have completed processing
+        void printNodeValues();         // Prints the values of nodes in nodeID order
 
 
     private:
@@ -35,8 +35,8 @@ class Controller {
         Node * nodeList;                // Pointer to array of nodes tracked by the controller. Populated by spawnNodes()
         std::vector<std::thread> tpool; // Tracks the threads used by the Controller to track nodes
         std::queue<Event> taskQueue;    // Queue of tasks that the controller must distribute/manage
-        std::mutex lk;
-        std::condition_variable cv;
+        std::mutex lk;                  // Mutex used to lock and guard access to the taskQueue
+        std::condition_variable cv;     // Condition variable used to synchronise and signal task queue availability
         
 
         /* PRIVATE FUNCTION DECLARATIONS */

@@ -60,7 +60,7 @@ bool Node::processDiskRead() {
  * Process disk write event
  */
 bool Node::processDiskWrite(int size) {
-    std::cout << "processDiskWrite called!" << std::endl;
+    //std::cout << "processDiskWrite called!" << std::endl;
     if (size > diskSize || size == 0) {
         return false;
     }

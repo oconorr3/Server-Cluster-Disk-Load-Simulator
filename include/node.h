@@ -20,6 +20,9 @@ public:
     **/
     bool processEvent(Event event);
 
+    /**
+    * Returns the amount of the nodes "disk" that is in use
+    **/
     int getDiskUsed();
 
 
@@ -31,7 +34,7 @@ private:
     std::list<int> filesOnDisk;     // List of previous write sizes still stored on the disk
 
     /* PRIVATE FUNCTION DECLARATIONS */
-    void runLRU(int size);                  // Clears space on the disk using LRU
+    void runLRU(int size);          // Clears space on the disk using LRU
     bool processDiskRead();         // Not sure what we want to do for reads yet.
     bool processDiskWrite(int size);// Increment counter of disk space, update filesOnDisk, call LRU if not enough space
 
