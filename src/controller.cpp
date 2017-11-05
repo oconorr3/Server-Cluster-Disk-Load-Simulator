@@ -6,6 +6,7 @@
 
 #include <thread>         // std::this_thread::sleep_for
 #include <chrono>         // std::chrono::seconds
+#include <fstream>
 
 /**
 *   Constructor for a Controller
@@ -130,27 +131,12 @@ void Controller::managerThread(int nodeRangeStart, int nodeRangeEnd) {
     free(event);
 }
 
-void Controller::printNodeValues() {
+void Controller::printNodeValues(char * filename) {
+    //std::this_thread::sleep_for (std::chrono::seconds(25));
+    std::ofstream myfile;
+    myfile.open(filename);
     for (int i = 0; i < numNodes; i++) {
-        std::cout << nodeList[i].getDiskUsed() << std::endl;
+        myfile << nodeList[i].getDiskUsed() << "\n";
     }
 }
 
-// Temporary main for compilation
-// int main() {
-//     Controller c(4, 9, 500);
-//     //NOTE CHECK IF NUMTHREAD > NUMNODE
-//     std::this_thread::sleep_for (std::chrono::seconds(1));
-//     c.addEvent((Event(50, 0, DISKWRITE)));
-//     c.addEvent((Event(55, 1, DISKWRITE)));
-//     c.addEvent((Event(60, 2, DISKWRITE)));
-//     c.addEvent((Event(65, 3, DISKWRITE)));
-//     c.addEvent((Event(70, 4, DISKWRITE)));
-//     c.addEvent((Event(75, 5, DISKWRITE)));
-//     c.addEvent((Event(80, 6, DISKWRITE)));
-//     c.addEvent((Event(420, 7, DISKWRITE)));
-//     c.addEvent((Event(300, 8, DISKWRITE)));
-//     c.addEvent((Event(50, 1, DISKWRITE)));
-//     c.shutdownController();
-//     c.printNodeValues();
-// }

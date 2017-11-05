@@ -33,7 +33,7 @@ bool Node::processEvent(Event event) {
  * Remove previous request to make space for next request
  */
 void Node::runLRU(int size) {
-    std::cout << "runLRU called!" << std::endl;
+    //std::cout << "runLRU called!" << std::endl;
     int floor = ((diskSize * 30) / 100);
     int spaceNeeded = size - (diskSize - diskUsed);
     // Clean up diskUsed to match space needed or 70% usage, whichever is larger

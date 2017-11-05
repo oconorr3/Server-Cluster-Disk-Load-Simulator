@@ -13,6 +13,7 @@
 
 #include "event.h"
 #include "node.h"
+#include <string>
 
 // Definition of the Controller Class
 class Controller {    
@@ -24,7 +25,7 @@ class Controller {
         void addEvent(Event event);     // Adds an event to the taskQueue for the controller
         int getNumNodes();              // Returns the number of nodes 
         void shutdownController();      // Joins all threads used by the controller once they have completed processing
-        void printNodeValues();         // Prints the values of nodes in nodeID order
+        void printNodeValues(char * filename);         // Prints the values of nodes in nodeID order
 
 
     private:
