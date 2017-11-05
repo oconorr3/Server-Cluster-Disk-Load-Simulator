@@ -5,4 +5,4 @@ VPATH = ./src/
 all:
 	g++ $(CXXFLAGS) $(VPATH)*.cpp $(LIBS)
 clean:
-	rm -f simulator *.o
+	rm -f simulator *.o *.csv

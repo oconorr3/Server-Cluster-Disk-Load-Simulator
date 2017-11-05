@@ -38,13 +38,17 @@ class Controller {
         std::queue<Event> taskQueue;    // Queue of tasks that the controller must distribute/manage
         std::mutex lk;                  // Mutex used to lock and guard access to the taskQueue
         std::condition_variable cv;     // Condition variable used to synchronise and signal task queue availability
+        std::queue<Event> *queueList;
+        std::mutex *queueLock;
+        int *boundries;
+        std::condition_variable *cvList;
         
 
         /* PRIVATE FUNCTION DECLARATIONS */
         void spawnThreads();            // spawns the threads that manage the nodes
         void spawnNodes();              // creates all nodes that are tracked by the controller
 
-        void managerThread(int nodeRangeStart, int nodeRangeEnd);
+        void managerThread(int nodeRangeStart, int nodeRangeEnd, int id);
 };
 
 #endif
