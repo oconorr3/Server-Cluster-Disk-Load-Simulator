@@ -35,12 +35,10 @@ class Controller {
         int nodeSize;                   // The size (in bytes) of th disk capacity for a node
         Node * nodeList;                // Pointer to array of nodes tracked by the controller. Populated by spawnNodes()
         std::vector<std::thread> tpool; // Tracks the threads used by the Controller to track nodes
-        std::queue<Event> taskQueue;    // Queue of tasks that the controller must distribute/manage
-        std::mutex lk;                  // Mutex used to lock and guard access to the taskQueue
         std::condition_variable cv;     // Condition variable used to synchronise and signal task queue availability
         std::queue<Event> *queueList;
         std::mutex *queueLock;
-        int *boundries;
+        int *threadBoundries;
         std::condition_variable *cvList;
         
 

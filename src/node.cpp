@@ -2,14 +2,14 @@
 
 #include "node.h"
 
-Node::Node(int size, int id) {
-    diskSize = size;
-    nodeID = id;
+Node::Node(int diskSize, int nodeID) {
+    this->diskSize = diskSize;
+    this->nodeID = nodeID;
 }
 
-void Node::instantiateNode(int size, int id) {
-    diskSize = size;
-    nodeID = id;
+void Node::instantiateNode(int diskSize, int nodeID) {
+    this->diskSize = diskSize;
+    this->nodeID = nodeID;
 }
 /**
  * Determine which function to call based on type of event

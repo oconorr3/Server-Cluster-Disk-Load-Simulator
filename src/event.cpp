@@ -8,14 +8,14 @@
     that a node must process.
 
     PARAMETERS:
-        bytes     - The size of the disk request in bytes
-        node      - The numerical ID of the node to which this event is assigned
-        eventType - The type of the event (DISKREAD or DISKWRITE)
+        size_b    - The size of the disk request in bytes
+        nodeID    - The numerical ID of the node to which this event is assigned
+        type      - The type of the event (DISKREAD or DISKWRITE)
 **/
-Event::Event(int bytes, int node, EventType eventType) {
-    size_b = bytes;
-    nodeID = node;
-    type   = eventType;   
+Event::Event(int size_b, int nodeID, EventType type) {
+    this->size_b = size_b;
+    this->nodeID = nodeID;
+    this->type   = type;   
 }
 
 /**

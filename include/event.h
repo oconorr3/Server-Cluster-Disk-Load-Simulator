@@ -16,11 +16,11 @@ class Event {
         that a node must process.
 
         PARAMETERS:
-            bytes     - The size of the disk request in bytes
-            node      - The numerical ID of the node to which this event is assigned
-            eventType - The type of the event (DISKREAD or DISKWRITE)
+            size_b    - The size of the disk request in bytes
+            nodeID    - The numerical ID of the node to which this event is assigned
+            type      - The type of the event (DISKREAD or DISKWRITE)
         **/
-        Event(int bytes, int node, EventType eventType);
+        Event(int size_b, int nodeID, EventType type);
 
         /**** PUBLIC METHOD DECLARATIONS ****/
 

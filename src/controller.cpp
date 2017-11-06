@@ -1,6 +1,6 @@
 // Author: Justin P. Finger
 // Last Update: 11/4/2017
-#include<iostream>
+#include <iostream>
 #include "controller.h"
 
 #include <chrono>         // std::chrono::seconds
@@ -17,14 +17,14 @@
 Controller::Controller(int numThreads, int numNodes, int nodeSize) {
     this->numThreads  = numThreads; // Track number of threads
     this->numNodes    = numNodes;   // Track number of nodes
-    this->nodeSize    = nodeSize;
-    shutdown = false;
+    this->nodeSize    = nodeSize;   // Track node disk size
+    shutdown = false;               // Flag for joining threads
 
-    //Test
-    queueList = new std::queue<Event>[numThreads];
-    queueLock = new std::mutex[numThreads];
-    boundries = new int[numThreads];
-    cvList    = new std::condition_variable[numThreads];
+    // Initialize Thread Specific variables
+    queueList = new std::queue<Event>[numThreads];      // Create work queue's
+    queueLock = new std::mutex[numThreads];             // Create work queue locks
+    cvList    = new std::condition_variable[numThreads];// Create manager thread condition variables
+    threadBoundries = new int[numThreads];                    // Tracks manager thread node ranges
     
     // Create Nodes
     spawnNodes();
@@ -36,22 +36,25 @@ Controller::Controller(int numThreads, int numNodes, int nodeSize) {
 *   Adds an event to the controller's queue of events.
 **/
 void Controller::addEvent(Event event) {
-    int nodeID = event.getNodeID();
+    int nodeID = event.getNodeID(); 
+    
+    // Identify which thread manages the node to which the event was assigned, and add 
+    // the event to that thread's work queue
     for (int i = 0; i < numThreads; i++) {
-        if (nodeID <= boundries[i]) {
-            std::unique_lock<std::mutex> qlk(queueLock[i]);
+
+        // Since threadBoundries are stored in ascending order, this will only pass for the thread
+        // which manages the desired node
+        if (nodeID <= threadBoundries[i]) {
+            // Lock the threads work queue
+            std::unique_lock<std::mutex> work_queue_lock(queueLock[i]);    
             queueList[i].push(event);
-            qlk.unlock();
-            cvList[i].notify_all();
+            work_queue_lock.unlock();
+
+            // Notify the thread it has recieved work
+            cvList[i].notify_all();     
             break;
         }
     }
-
-
-    //std::unique_lock<std::mutex> queuelock(Controller::lk);
-    //taskQueue.push(event);
-    //queuelock.unlock();
-    //cv.notify_all();
 }
 
 /**
@@ -104,24 +107,23 @@ void Controller::spawnThreads() {
     int range_end = range_size - 1;
     // Spawn the threadds and assign them partitions of the node array to manage
     for (int i = 0; i < numThreads - 1; i++) {
-        //TEST:
-        boundries[i] = range_end;
-
+        threadBoundries[i] = range_end; // Track the end of each thread's partition: used for assiging work to threads
         tpool.push_back(std::thread(&Controller::managerThread, this, range_start, range_end, i));
         range_start = range_end;
         range_end += range_size - 1;
     }
     // For last thread, handle different end of range
-    boundries[numThreads - 1] = range_end;
+    threadBoundries[numThreads - 1] = range_end;
     tpool.push_back(std::thread(&Controller::managerThread, this, range_start, numNodes - 1, numThreads - 1));
 }
 
 
 void Controller::managerThread(int nodeRangeStart, int nodeRangeEnd, int id) {
-    // Create a lock for mutex lk
+    // Create a lock for this threads mutex
     std::unique_lock<std::mutex> queuelock(queueLock[id], std::defer_lock);
     bool taskAcquired = false;
 
+    // Used to grab incoming events
     Event * event = (Event *) calloc(1, sizeof(Event));
 
     while (!shutdown) {
@@ -130,17 +132,14 @@ void Controller::managerThread(int nodeRangeStart, int nodeRangeEnd, int id) {
         while (!taskAcquired && !shutdown) {
             // If task queue is empty, there is no work to do
             if (!queueList[id].empty()) {
-                
                 event->copyValues(queueList[id].front());
                 // If task at the top of the queue is for a node managed by this thread, grab it.
                 if (event->getNodeID() >= nodeRangeStart && event->getNodeID() <= nodeRangeEnd) {
                     queueList[id].pop();
                     taskAcquired = true;
-                    //cv.notify_all();
-                    
                 }
             }
-            if (!taskAcquired) {
+            if (!taskAcquired) {    // Wait until work is available if none was found
                 cvList[id].wait(queuelock);
             }
         }
@@ -156,7 +155,6 @@ void Controller::managerThread(int nodeRangeStart, int nodeRangeEnd, int id) {
 }
 
 void Controller::printNodeValues(char * filename) {
-    //std::this_thread::sleep_for (std::chrono::seconds(25));
     std::ofstream myfile;
     myfile.open(filename);
     for (int i = 0; i < numNodes; i++) {
