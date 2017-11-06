@@ -66,21 +66,26 @@ int Controller::getNumNodes() {
 
 /**
 *   Joins all manager threads once their work is completed.
-*   NOTE: This could be optimized some with a different condition variable.
+*
+*   PRECONDITION: All work that will be assigned to the controller has been assigned
+*                 before shutdownController() is called.
 **/
 void Controller::shutdownController() {
-    std::this_thread::sleep_for (std::chrono::seconds(5));
-    // std::unique_lock<std::mutex> queuelock(Controller::lk);
-    // while (!taskQueue.empty()) {
-    //     cv.wait(queuelock);
-    // }
-    // queuelock.unlock();
+    // Check that each managerThread thread has finished processing all events in their
+    // individual work queue before setting shutdown to true and destroying the threads.
+    for (int i = 0; i < numThreads; i++) {
+        std::unique_lock<std::mutex> queuelock(queueLock[i]);
+        while (!queueList[i].empty()) {
+            cv.wait(queuelock);
+        }
+        queuelock.unlock();
+    }
+
+    // Set shutdown to true and signal all threads to terminate and join
     shutdown = true;
-    cv.notify_all();
     for (int i = 0; i < numThreads; i++) {
         cvList[i].notify_all();
         tpool.at(i).join();
-        std::cout << queueList[i].size() << std::endl;
     }
 }
 
@@ -126,17 +131,27 @@ void Controller::managerThread(int nodeRangeStart, int nodeRangeEnd, int id) {
     // Used to grab incoming events
     Event * event = (Event *) calloc(1, sizeof(Event));
 
-    while (!shutdown) {
+    while (true) {//!shutdown) {
         queuelock.lock();
         //Wait until there is work to do
-        while (!taskAcquired && !shutdown) {
-            // If task queue is empty, there is no work to do
+        while (!taskAcquired) { //&& !shutdown) {
+            // If task queue is not empty, there is work to do
             if (!queueList[id].empty()) {
                 event->copyValues(queueList[id].front());
                 // If task at the top of the queue is for a node managed by this thread, grab it.
                 if (event->getNodeID() >= nodeRangeStart && event->getNodeID() <= nodeRangeEnd) {
                     queueList[id].pop();
                     taskAcquired = true;
+                }
+            }
+            else {  // Task queue is empty, meaning no work to do
+                // Notify Controller that all work for this thread is currently completed, check if 
+                // it is time to shut down and destroy
+                cv.notify_all();
+                if (shutdown) { 
+                    queuelock.unlock();
+                    free(event);
+                    return;
                 }
             }
             if (!taskAcquired) {    // Wait until work is available if none was found
@@ -146,12 +161,8 @@ void Controller::managerThread(int nodeRangeStart, int nodeRangeEnd, int id) {
         queuelock.unlock();
         taskAcquired = false;
 
-        if (!shutdown) { 
-            // pass command to node
-            nodeList[event->getNodeID()].processEvent(*event);
-        }
+        nodeList[event->getNodeID()].processEvent(*event);
     }
-    free(event);
 }
 
 void Controller::printNodeValues(char * filename) {

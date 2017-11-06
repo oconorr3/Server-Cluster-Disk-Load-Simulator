@@ -3,7 +3,7 @@
 
 #include <iostream>
 int main() {
-    Controller c(5, 10000, 550);
+    Controller c(20, 10000, 550);
     RandomLoadBalancer lb(&c);
     lb.run(1500, true, 50);
     char file1[] = "time1.csv";
@@ -23,7 +23,7 @@ int main() {
 
     lb.run(20000000, true, 50);
     char file5[] = "time6.csv";
-    //c.printNodeValues(file5);
+    c.printNodeValues(file5);
 
 
 

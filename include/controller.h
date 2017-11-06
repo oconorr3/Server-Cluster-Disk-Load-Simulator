@@ -24,7 +24,16 @@ class Controller {
         /* PUBLIC FUNCTION DECLARATIONS */
         void addEvent(Event event);     // Adds an event to the taskQueue for the controller
         int getNumNodes();              // Returns the number of nodes 
-        void shutdownController();      // Joins all threads used by the controller once they have completed processing
+
+        /**
+        *   Joins all manager threads once their work is completed.
+        *
+        *   PRECONDITION: All work that will be assigned to the controller has been assigned
+        *                 before shutdownController() is called.
+        **/
+        void shutdownController(); 
+
+
         void printNodeValues(char * filename);         // Prints the values of nodes in nodeID order
 
 
@@ -36,10 +45,12 @@ class Controller {
         Node * nodeList;                // Pointer to array of nodes tracked by the controller. Populated by spawnNodes()
         std::vector<std::thread> tpool; // Tracks the threads used by the Controller to track nodes
         std::condition_variable cv;     // Condition variable used to synchronise and signal task queue availability
-        std::queue<Event> *queueList;
-        std::mutex *queueLock;
-        int *threadBoundries;
-        std::condition_variable *cvList;
+
+        // Thread work distribution/synchronization variables
+        std::queue<Event> *queueList;   // List of work queues. Each thread has one of these queues assigned to it
+        std::mutex *queueLock;          // List of locks for the work queues
+        int *threadBoundries;           // End markers for the manager threads partitions of nodeList (used for assigning work to the proper thread)
+        std::condition_variable *cvList;// Condition variables for the work queues
         
 
         /* PRIVATE FUNCTION DECLARATIONS */
