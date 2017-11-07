@@ -4,3 +4,7 @@ lib/*
 simulator
 *.csv
 
+*/deps*
+*.pyc
+*.dirstamp
+autom4te.cache*
