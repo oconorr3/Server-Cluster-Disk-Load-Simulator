@@ -185,7 +185,7 @@ void DataBank::graphAllSnapshots(std::string directoryName) {
 
 
 
- int main() {
+ /*int main() {
  	DataBank dataBank(200, 5);	//100 nodes report int of 5 
 	
 	//add 1000 events to every node
@@ -200,4 +200,4 @@ void DataBank::graphAllSnapshots(std::string directoryName) {
 	dataBank.graphAllSnapshots("yolo");
 
  	return 0;
- }
+ }*/
