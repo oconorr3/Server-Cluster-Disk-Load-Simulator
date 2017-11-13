@@ -1,3 +1,5 @@
+// Author: Justin P. Finger
+
 #include "randomlb.h"
 #include "event.h"
 RandomLoadBalancer::RandomLoadBalancer(Controller *controller) {
