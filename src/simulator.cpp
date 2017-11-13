@@ -5,7 +5,7 @@
 
 // For testing
 int main() {
-    Controller c(20, 10000, 550);
+    Controller c(5, 1003, 550);
     RandomLoadBalancer lb(&c);
     lb.run(1500, true, 50);
     char file1[] = "time1.csv";
@@ -23,7 +23,7 @@ int main() {
     char file4[] = "time4.csv";
     c.printNodeValues(file4);
 
-    lb.run(20000000, true, 50);
+    lb.run(20000, true, 50);
     char file5[] = "time6.csv";
     c.printNodeValues(file5);
 
