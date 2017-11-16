@@ -3,10 +3,11 @@
 DataBank::DataBank(int numNodes, int interval)  {
 	
 	numberOfNodes = numNodes;
-	nodeLoadData = new std::vector<int>[numberOfNodes];
 	reportLoadInterval = interval;
-	timeStepCounter = 0;
 	
+	nodeLoadSums = new int[numberOfNodes];
+	nodeLoadAverages = new double[numberOfNodes];
+	nodeLoadData = new std::vector<int>[numberOfNodes];
 	
 	//create a list for every node to report to
 	for (int i = 0; i < numberOfNodes; i++) {
@@ -16,11 +17,32 @@ DataBank::DataBank(int numNodes, int interval)  {
 }
 
 
-void DataBank::reportLoad(int nodeNumber, int data) {
+DataBank::~DataBank() {
+	delete [] nodeLoadSums;
+	delete [] nodeLoadAverages;
+	delete [] nodeLoadData;
+
+}
+
+
+double *DataBank::getAverages() {
+	return nodeLoadAverages;
+} 
+
+std::vector<int> * DataBank::getNodeLoadData() {
+	return nodeLoadData;
+}
+
+		
+void DataBank::reportLoad(int nodeNumber, int load) {
 	//go to the list in nodeLoadData that corresponds to the node number
 	//and add the data
-	if (!(nodeNumber < 0 || nodeNumber >= numberOfNodes))
-		nodeLoadData[nodeNumber].push_back(data);
+	if (!(nodeNumber < 0 || nodeNumber >= numberOfNodes)) {
+		nodeLoadData[nodeNumber].push_back(load);
+		nodeLoadSums[nodeNumber] += load;
+		nodeLoadAverages[nodeNumber] = (double)nodeLoadSums[nodeNumber] / nodeLoadData[nodeNumber].size();
+	}
+		
 }
 
 void DataBank::printData() {
@@ -35,30 +57,6 @@ void DataBank::printData() {
 	}
 }
 
-std::vector<double> DataBank::calculateAverages() {
-	std::vector<double> averages;
-	
-	int numberOfDataPoints = nodeLoadData[0].size();
-	//go through each x value
-	for (int i = 0; i < numberOfDataPoints; i++) {
-		//compute sum of y values
-		int sum = 0;
-		for (int j = 0; j < numberOfNodes; j++) {
-			std::vector<int> jNodeDataList = nodeLoadData[j];
-			//std::cout << "adding data point " << jNodeDataList[i] << " to sum for point 1\n";
-			sum += jNodeDataList[i];
-		}
-		
-		//calculate avg of y values
-		
-		double avg = (double)sum / numberOfNodes;
-		averages.push_back(avg);
-		
-	}
-	
-	return averages;
-}
-
 
 void DataBank::graphAvg(std::string directory) {
 	std::string commandFileName;
@@ -69,15 +67,13 @@ void DataBank::graphAvg(std::string directory) {
 	
 	
 	//write the avg load data to a file
-	std::vector<double> averages = calculateAverages();
 	dataFileName = "averageLoadDataValues..dat";
 	dataUnit.open(dataFileName.c_str());
 	
-	int numberOfDataPoints = averages.size();
-	for (int i = 0; i < numberOfDataPoints; i++) {
+	for (int i = 0; i < numberOfNodes; i++) {
 		
 		dataUnit << reportLoadInterval * i << " "	//x value
-			<< averages[i] << "\n";					//y value
+			<< nodeLoadAverages[i] << "\n";					//y value
 	}
 	dataUnit.close();
 	
@@ -195,9 +191,13 @@ void DataBank::graphAllSnapshots(std::string directoryName) {
 		}
 	}
 	
+	dataBank.reportLoad(0, 1);
+	dataBank.reportLoad(0, 2);
+	dataBank.reportLoad(0, 7);
+	dataBank.reportLoad(0, 23);
+	std::cout << "node 0 avg " << dataBank.getAverages()[0] << std::endl;
+	dataBank.reportLoad(0, 7);
+	std::cout << "node 0 avg " << dataBank.getAverages()[0] << std::endl;
 	
-
-	dataBank.graphAllSnapshots("yolo");
-
  	return 0;
  }*/
