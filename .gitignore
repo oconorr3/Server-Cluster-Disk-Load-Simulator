@@ -7,6 +7,8 @@ simulator
 
 */deps*
 *.pyc
+*.pkl
+*exclude/*
 *.dirstamp
 
 autom4te.cache*
