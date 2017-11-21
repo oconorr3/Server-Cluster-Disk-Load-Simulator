@@ -1,22 +1,22 @@
 #include <iostream>
 
-#include "node.h"
+#include "disknode.h"
 
-Node::Node(int diskSize, int nodeID) {
+DiskNode::DiskNode(int diskSize, int nodeID) {
     this->diskSize = diskSize;
     this->nodeID = nodeID;
 }
 
-void Node::instantiateNode(int diskSize, int nodeID) {
+void DiskNode::instantiateDiskNode(int diskSize, int nodeID) {
     this->diskSize = diskSize;
     this->nodeID = nodeID;
 }
 /**
  * Determine which function to call based on type of event
  */
-bool Node::processEvent(Event event) {
+bool DiskNode::processEvent(Event event) {
     // Might be necessary to check whether event ID
-    // matches Node id, currently no way to get event id
+    // matches DiskNode id, currently no way to get event id
     enum EventType type = event.getEventType();
     if (type == DISKREAD) {
         return processDiskRead();
@@ -32,7 +32,7 @@ bool Node::processEvent(Event event) {
 /**
  * Remove previous request to make space for next request
  */
-void Node::runLRU(int size) {
+void DiskNode::runLRU(int size) {
     //std::cout << "runLRU called!" << std::endl;
     int floor = ((diskSize * 30) / 100);
     int spaceNeeded = size - (diskSize - diskUsed);
@@ -51,7 +51,7 @@ void Node::runLRU(int size) {
 /**
  * Process disk read event
  */
-bool Node::processDiskRead() {
+bool DiskNode::processDiskRead() {
     std::cout << "processDiskRead called!" << std::endl;
     return true;
 }
@@ -59,7 +59,7 @@ bool Node::processDiskRead() {
 /**
  * Process disk write event
  */
-bool Node::processDiskWrite(int size) {
+bool DiskNode::processDiskWrite(int size) {
     //std::cout << "processDiskWrite called!" << std::endl;
     if (size > diskSize || size == 0) {
         return false;
@@ -72,6 +72,6 @@ bool Node::processDiskWrite(int size) {
     return true;
 }
 
-int Node::getDiskUsed() {
+int DiskNode::getDiskUsed() {
     return diskUsed;
 }
