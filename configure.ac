@@ -7,11 +7,12 @@ AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_SRCDIR([src/simulator.cpp])
 AC_CONFIG_HEADERS([config.h])
 
+AC_SUBST([CPPFLAGS], ["-I/usr/include/python2.7"])
+AC_SUBST([CXXFLAGS], ["-ggdb3 -O0"])
+
 # Checks for programs.
 AC_PROG_CXX([g++ python])
 AC_PROG_CC([gcc])
-
-AC_SUBST([CPPFLAGS], [-I/usr/include/python2.7])
 
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lpthread':
