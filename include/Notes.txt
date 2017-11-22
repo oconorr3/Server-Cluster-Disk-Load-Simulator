@@ -1,1 +1,3 @@
 add a clear node function to reuse controllers
+
+Check if variables need destroyed in shutdownController()

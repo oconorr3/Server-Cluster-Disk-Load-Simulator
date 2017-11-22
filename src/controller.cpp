@@ -1,10 +1,9 @@
 // Author: Justin P. Finger
-// Last Update: 11/4/2017
-#include <iostream>
-#include "controller.h"
+// Last Update: 11/6/2017
 
-#include <chrono>         // std::chrono::seconds
 #include <fstream>
+
+#include "controller.h"
 
 /**
 *   Constructor for a Controller
@@ -24,7 +23,7 @@ Controller::Controller(int numThreads, int numNodes, int nodeSize) {
     queueList = new std::queue<Event>[numThreads];      // Create work queue's
     queueLock = new std::mutex[numThreads];             // Create work queue locks
     cvList    = new std::condition_variable[numThreads];// Create manager thread condition variables
-    threadBoundries = new int[numThreads];                    // Tracks manager thread node ranges
+    threadBoundries = new int[numThreads];              // Tracks manager thread node ranges
     
     // Create Nodes
     spawnNodes();
@@ -161,6 +160,7 @@ void Controller::managerThread(int nodeRangeStart, int nodeRangeEnd, int id) {
         queuelock.unlock();
         taskAcquired = false;
 
+        // Process the event
         nodeList[event->getNodeID()].processEvent(*event);
     }
 }

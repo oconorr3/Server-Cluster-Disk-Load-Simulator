@@ -8,7 +8,11 @@
 // Defines the Node class
 class Node {
 public:
-    Node() { }; // Default Constructor
+    // Default Constructor
+    Node() { 
+        lru_threshold = 0; // Default value is clean disk till empty
+    };
+
     Node(int diskSize, int nodeID);
 
     void instantiateNode(int diskSize, int nodeID);
@@ -31,11 +35,13 @@ private:
     int diskSize;                   // The total disk space available
     int diskUsed;                   // The bytes used on the disk
     int nodeID;                     // ID of the node
+    int lru_threshold;              // The disk usage level that runLRU() will clean full disks to
+    int lru_disk_free;              // The exact amount of space free on disk if LRU cleans to lru_threshold     
     std::list<int> filesOnDisk;     // List of previous write sizes still stored on the disk
 
     /* PRIVATE FUNCTION DECLARATIONS */
     void runLRU(int size);          // Clears space on the disk using LRU
-    bool processDiskRead();         // Not sure what we want to do for reads yet.
+    bool processDiskRead();         // Increment's time counter if considering reads
     bool processDiskWrite(int size);// Increment counter of disk space, update filesOnDisk, call LRU if not enough space
 
 

@@ -1,11 +1,14 @@
 #include "controller.h"
 #include "randomlb.h"
+#include "roundrobinlb.h"
 
 #include <iostream>
+
+// For testing
 int main() {
-    Controller c(20, 10000, 550);
-    RandomLoadBalancer lb(&c);
-    lb.run(1500, true, 50);
+    Controller c(5, 1003, 550);
+    RoundRobinLBalancer lb(&c);
+    lb.run(1500, false, 50);
     char file1[] = "time1.csv";
     c.printNodeValues(file1);
 
@@ -21,7 +24,7 @@ int main() {
     char file4[] = "time4.csv";
     c.printNodeValues(file4);
 
-    lb.run(20000000, true, 50);
+    lb.run(20000, true, 50);
     char file5[] = "time6.csv";
     c.printNodeValues(file5);
 
