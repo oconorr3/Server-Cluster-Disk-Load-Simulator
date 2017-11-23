@@ -1,12 +1,12 @@
 // Author: Justin P. Finger
 
-#include "randomlb.h"
+#include "roundrobinlb.h"
 #include "event.h"
 
 /*
-    Creates a Random load balancer that uses a specified controller
+    Creates a Round Robin load balancer that uses a specified controller
 */
-RandomLoadBalancer::RandomLoadBalancer(Controller *controller) {
+RoundRobinLBalancer::RoundRobinLBalancer(Controller *controller) {
     this->controller = controller;
     numNodes = controller->getNumNodes();
 }
@@ -22,7 +22,7 @@ RandomLoadBalancer::RandomLoadBalancer(Controller *controller) {
                             generated sizes from 0 to eventSize.
         eventSize      - The size threshold of generated events.
 */
-void RandomLoadBalancer::run(int inputSize, bool fixedEventSize, int eventSize) {
+void RoundRobinLBalancer::run(int inputSize, bool fixedEventSize, int eventSize) {
     if (fixedEventSize) {
         runFixedSize(inputSize, eventSize);
     }
@@ -38,10 +38,10 @@ void RandomLoadBalancer::run(int inputSize, bool fixedEventSize, int eventSize) 
         inputSize - The number of events to generate/run
         eventSize - The size of each event
 */
-void RandomLoadBalancer::runFixedSize(int inputSize, int eventSize) {
+void RoundRobinLBalancer::runFixedSize(int inputSize, int eventSize) {
     int nodeID = 0;
     for (int i = 0; i < inputSize; i++) {
-        nodeID = generateNodeID();
+        nodeID = i % numNodes;
         controller->addEvent(Event(eventSize, nodeID, DISKWRITE));
     }
 }
@@ -53,27 +53,20 @@ void RandomLoadBalancer::runFixedSize(int inputSize, int eventSize) {
         inputSize - The number of events to generate/run
         eventSize - The maximum size possible for events to be generated
 */
-void RandomLoadBalancer::runVariableSize(int inputSize, int eventSize) {
+void RoundRobinLBalancer::runVariableSize(int inputSize, int eventSize) {
     int nodeID = 0;
-    int bytes = 0;
+    int writeSize = 0;
     for (int i = 0; i < inputSize; i++) {
-        nodeID = generateNodeID();
-        bytes = generateEventSize(eventSize);
-        controller->addEvent(Event(bytes, nodeID, DISKWRITE));
-
+        nodeID = i % numNodes;
+        writeSize = generateEventSize(eventSize);
+        controller->addEvent(Event(writeSize, nodeID, DISKWRITE));
+        
     }
-}
-
-/*
-    Generates a random number between 0 and numNodes
-*/
-int RandomLoadBalancer::generateNodeID() {
-    return rand() % numNodes;
 }
 
 /*
     Generates a random number between 0 and eventSize
 */
-int RandomLoadBalancer::generateEventSize(int eventSize) {
+int RoundRobinLBalancer::generateEventSize(int eventSize) {
     return rand() % eventSize;
 }

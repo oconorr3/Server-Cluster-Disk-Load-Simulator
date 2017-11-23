@@ -1,16 +1,16 @@
-#ifndef RANDOMLB_H
-#define RANDOMLB_H
+#ifndef ROUNDROBINLB_H
+#define ROUNDROBINLB_H
 
 #include "controller.h"
 
 
 
-class RandomLoadBalancer {
+class RoundRobinLBalancer {
     public:
         /*
-         Creates a Random load balancer that uses a specified controller
+         Creates a Round Robin load balancer that uses a specified controller
          */
-        RandomLoadBalancer(Controller *controller); 
+        RoundRobinLBalancer(Controller *controller);
 
         /*
         Runs the load balancer for a specified number of events. This method has two variants,
@@ -24,6 +24,7 @@ class RandomLoadBalancer {
             eventSize      - The size threshold of generated events.
         */
         void run(int inputSize, bool fixedEventSize, int eventSize);
+
     private:
         Controller *controller;     // Controller to be used by the load balancer
         int numNodes;               // The number of nodes managed by the controller
@@ -39,19 +40,16 @@ class RandomLoadBalancer {
         */
         void runFixedSize(int inputSize, int eventSize);
 
+        /* PRIVATE FUNCTIONS */
+        
         /*
-        Runs the variable event size variant of the load balancer. Event sizes will be between
-        0 and eventSize.
+        Runs the fixed event size variant of the load balancer. 
+
         Parameters:
             inputSize - The number of events to generate/run
-            eventSize - The maximum size possible for events to be generated
+            eventSize - The size of each event
         */
         void runVariableSize(int inputSize, int eventSize);
-
-        /*
-        Generates a random number between 0 and numNodes
-        */
-        int generateNodeID();
 
         /*
         Generates a random number between 0 and eventSize
