@@ -22,6 +22,7 @@ PickleData PickleLoader::itemAtIndex(std::string pickleFile, int index) {
         py::dict dict = py::extract<py::dict>(data[index]);
 
         // Get all of the different elements of the row of data from the pickle
+        int timestamp = py::extract<int>(dict["timestamp"]);
         int elapsedTime = py::extract<int>(dict["elapsedTime"]);
         bool isWrite = py::extract<bool>(dict["isWrite"]);
         std::string fileName = py::extract<std::string>(dict["fileName"]);
@@ -30,11 +31,13 @@ PickleData PickleLoader::itemAtIndex(std::string pickleFile, int index) {
 
         // Set the structure members accordingly
         pickleData.initialized = true;
+        pickleData.timestamp = timestamp;
         pickleData.elapsedTime = elapsedTime;
         pickleData.isWrite = isWrite;
         pickleData.fileName = fileName;
         pickleData.diskNum = diskNum;
         pickleData.size = size;
+
 
         // Return the result
         return pickleData;

@@ -15,7 +15,8 @@ AC_PROG_CXX([g++ python])
 AC_PROG_CC([gcc])
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-lpthread':
+AC_CHECK_LIB([boost_python], [boost::python::api::object::object], []
+    [AC_MSG_ERROR(cannot find header file)], []) 
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h pyconfig.h], [],

@@ -11,6 +11,7 @@ struct _PickleData {
     bool initialized;
 
     // Information for a row of data from the pickle file
+    int timestamp;
     int elapsedTime;
     bool isWrite;
     std::string fileName;

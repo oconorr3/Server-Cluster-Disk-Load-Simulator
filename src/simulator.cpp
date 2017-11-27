@@ -34,15 +34,9 @@ int main() {
     int firstLength =  ploader.loadPickle("exclude/tracedata00.pkl");
     for (int i = 0; i < firstLength; i++) {
         PickleData element = ploader.itemAtIndex("exclude/tracedata00.pkl", i);
-        std::cout << element.elapsedTime << " " << element.isWrite << " " << element.fileName
-            << " " << element.diskNum << " " << element.size << std::endl;
+        std::cout << element.timestamp << " " << element.elapsedTime << " " << element.isWrite <<
+            " " << element.fileName << " " << element.diskNum << " " << element.size << std::endl;
     }
-    int secondLength =  ploader.loadPickle("exclude/tracedata01.pkl");
-    for (int i = 0; i < secondLength; i++) {
-        PickleData element = ploader.itemAtIndex("exclude/tracedata01.pkl", i);
-        std::cout << element.elapsedTime << " " << element.isWrite << " " << element.fileName
-            << " " << element.diskNum << " " << element.size << std::endl;
-    }
-
+    
     return 0;
 }
