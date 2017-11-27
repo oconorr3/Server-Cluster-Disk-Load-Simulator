@@ -1,5 +1,5 @@
 bin_PROGRAMS = simulator
 simulator_SOURCES = src/controller.cpp src/databank.cpp src/disknode.cpp src/event.cpp \
 src/loadbalancer.cpp src/pickleloader.cpp src/pyutils.cpp src/randomlb.cpp src/simulator.cpp
-simulator_LDFLAGS = -L/usr/lib/x86_64-linux-gnu -lpthread -lboost_python-py27 -lpython2.7 -pthread 
+simulator_LDFLAGS = -L/usr/lib/x86_64-linux-gnu -lpthread -lboost_python -lpython2.7 -pthread 
 simulator_CXXFLAGS = -I./include -I/usr/include/ -I/usr/include/python2.7 -std=c++11 -Wall
