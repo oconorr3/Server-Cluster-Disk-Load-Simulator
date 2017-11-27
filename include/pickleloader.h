@@ -1,6 +1,7 @@
 #ifndef PICKLELOAD_H
 #define PICKLELOAD_H
 
+#include <map>
 #include <boost/python.hpp>
 #include <Python.h>
 

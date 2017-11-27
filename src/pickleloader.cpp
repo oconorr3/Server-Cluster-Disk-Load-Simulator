@@ -1,6 +1,9 @@
+#include <boost/python.hpp>
+#include <Python.h>
 #include <boost/format.hpp>
 #include <iostream>
-
+#include <map>
+#include <vector>
 #include "pickleloader.h"
 #include "pyutils.h"
 

@@ -8,23 +8,30 @@
 #include <string>
 #include <cstdlib>
 #include <fstream>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 
 class DataBank {
-	public: 
-		/*Public Function Declarations*/
-		DataBank(int numNodes, int interval);
-		void reportLoad(int nodeNumber, int data);
-		void printData();
-		void graphDataDynamically();
-		void graphData();
-				
 	private:
-		int reportLoadInterval;	//used for graphing
-		int timeStepCounter;
+		int reportLoadInterval;	
 		int numberOfNodes;
-		std::vector<int> *nodeLoadData;	//array of vectors, where each vector holds the data records for its respective node
 		
-		std::vector<double> calculateAverages(); 
+		int *nodeLoadSums;
+		double *nodeLoadAverages;
+		std::vector<int> *nodeLoadData;							//array of vectors, where each vector holds the data records for its respective node
+	
+	public: 
+		DataBank(int numNodes, int interval);					//constructor
+		~DataBank();											//destructor
+		void reportLoad(int nodeNumber, int load);				//used by nodes to report data to the data bank
+		void printData();										//prints the data for every node to to std out
+		void graphAvg(std::string directory);					//graphs the average load across all nodes
+		void graphSnapshot(int t, std::string directory); 		//produces a grpah for each reportLoadInterval, x-axis -> node n, y-axis-> load on that node at time t * reportLoadInterval
+		void graphAllSnapshots(std::string directoryName);
+		
+		std::vector<int> * getNodeLoadData();
+		double *getAverages();
 };
 
 
