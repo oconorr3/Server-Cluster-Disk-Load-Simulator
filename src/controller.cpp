@@ -7,7 +7,7 @@
 
 /**
 *   Constructor for a Controller
-*   
+*
 *   PARAMETERS:
 *       numThreads - the number of threads to be used by the controller
 *       numNodes   - the number of nodes that the controller will simulate
@@ -35,9 +35,9 @@ Controller::Controller(int numThreads, int numNodes, int nodeSize) {
 *   Adds an event to the controller's queue of events.
 **/
 void Controller::addEvent(Event event) {
-    int nodeID = event.getNodeID(); 
-    
-    // Identify which thread manages the node to which the event was assigned, and add 
+    int nodeID = event.getNodeID();
+
+    // Identify which thread manages the node to which the event was assigned, and add
     // the event to that thread's work queue
     for (int i = 0; i < numThreads; i++) {
 
@@ -45,12 +45,12 @@ void Controller::addEvent(Event event) {
         // which manages the desired node
         if (nodeID <= threadBoundries[i]) {
             // Lock the threads work queue
-            std::unique_lock<std::mutex> work_queue_lock(queueLock[i]);    
+            std::unique_lock<std::mutex> work_queue_lock(queueLock[i]);
             queueList[i].push(event);
             work_queue_lock.unlock();
 
             // Notify the thread it has recieved work
-            cvList[i].notify_all();     
+            cvList[i].notify_all();
             break;
         }
     }
@@ -89,24 +89,24 @@ void Controller::shutdownController() {
 }
 
 /**
-*   Creates Node instances and stores them in the vector nodeList
+*   Creates DiskNode instances and stores them in the vector nodeList
 **/
 void Controller::spawnNodes() {
-    nodeList = new Node[numNodes];
+    nodeList = new DiskNode[numNodes];
     // Initialize values of the nodes in nList
     for (int i = 0; i < numNodes; i++) {
-        nodeList[i].instantiateNode(nodeSize, i);
+        nodeList[i].instantiateDiskNode(nodeSize, i);
     }
 }
 
 /**
-*   Spawn the Node Manager threads. 
+*   Spawn the DiskNode Manager threads.
 *
 *   Note: Must use (&Controller) and pass 'this' as first parameter.
 **/
 void Controller::spawnThreads() {
     // Determine the number of nodes each thread must manage
-    int range_size = numNodes / numThreads; 
+    int range_size = numNodes / numThreads;
     int range_start = 0;
     int range_end = range_size - 1;
     // Spawn the threadds and assign them partitions of the node array to manage
@@ -144,10 +144,10 @@ void Controller::managerThread(int nodeRangeStart, int nodeRangeEnd, int id) {
                 }
             }
             else {  // Task queue is empty, meaning no work to do
-                // Notify Controller that all work for this thread is currently completed, check if 
+                // Notify Controller that all work for this thread is currently completed, check if
                 // it is time to shut down and destroy
                 cv.notify_all();
-                if (shutdown) { 
+                if (shutdown) {
                     queuelock.unlock();
                     free(event);
                     return;
@@ -172,4 +172,3 @@ void Controller::printNodeValues(char * filename) {
         myfile << nodeList[i].getDiskUsed() << "\n";
     }
 }
-

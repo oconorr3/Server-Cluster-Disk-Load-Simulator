@@ -49,7 +49,7 @@ void DataBank::printData() {
 	for (int i = 0; i < numberOfNodes; i++) {
 		std::vector<int> iNode = nodeLoadData[i];
 		
-		std::cout << "Node " << i << " data: ";
+		std::cout << "DiskNode " << i << " data: ";
 		for (int j = 0; j < (int)iNode.size(); j++) {
 			std::cout << iNode[j] << "\t";
 		}

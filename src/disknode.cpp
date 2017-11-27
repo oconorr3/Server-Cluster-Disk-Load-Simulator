@@ -1,15 +1,15 @@
 #include <iostream>
 
-#include "node.h"
+#include "disknode.h"
 
-Node::Node(int diskSize, int nodeID) {
+DiskNode::DiskNode(int diskSize, int nodeID) {
     this->diskSize = diskSize;
     this->nodeID   = nodeID;
     lru_threshold  = ((diskSize * 30) / 100);  // 70% of disk space (NOTE: Maybe make this a parameter?)
     lru_disk_free  = diskSize - lru_threshold; // Exact amount of disk free when disk is filled to lru_threshold
 }
 
-void Node::instantiateNode(int diskSize, int nodeID) {
+void DiskNode::instantiateDiskNode(int diskSize, int nodeID) {
     this->diskSize = diskSize;
     this->nodeID   = nodeID;
     lru_threshold  = ((diskSize * 70) / 100);  // 70% of disk space (NOTE: Maybe make this a parameter?)    
@@ -18,9 +18,9 @@ void Node::instantiateNode(int diskSize, int nodeID) {
 /**
  * Determine which function to call based on type of event
  */
-bool Node::processEvent(Event event) {
+bool DiskNode::processEvent(Event event) {
     // Might be necessary to check whether event ID
-    // matches Node id, currently no way to get event id
+    // matches DiskNode id, currently no way to get event id
     enum EventType type = event.getEventType();
     if (type == DISKREAD) {
         return processDiskRead();
@@ -36,7 +36,7 @@ bool Node::processEvent(Event event) {
 /**
  * Remove previous request to make space for next request
  */
-void Node::runLRU(int size) {
+void DiskNode::runLRU(int size) {
     int spaceNeeded = size - (diskSize - diskUsed);
     // Clean up diskUsed to match space needed or the disk usage defined by lru_disk_free, whichever is larger
     if (spaceNeeded < lru_disk_free) {
@@ -53,7 +53,7 @@ void Node::runLRU(int size) {
 /**
  *  Process disk read event
  */
-bool Node::processDiskRead() {
+bool DiskNode::processDiskRead() {
     // TODO: Handle this when timing is implemented
     return true;
 }
@@ -61,7 +61,7 @@ bool Node::processDiskRead() {
 /**
  *  Process disk write event
  */
-bool Node::processDiskWrite(int size) {
+bool DiskNode::processDiskWrite(int size) {
     // Ensure size is not larger than total disk space
     if (size > diskSize || size == 0) {
         return false;
@@ -78,6 +78,6 @@ bool Node::processDiskWrite(int size) {
 /**
 *   Returns the amount of the nodes "disk" that is in use
 **/
-int Node::getDiskUsed() {
+int DiskNode::getDiskUsed() {
     return diskUsed;
 }

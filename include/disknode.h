@@ -1,31 +1,27 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef DiskNode_H
+#define DiskNode_H
 
 #include <list>
 
 #include "event.h"
 
-// Defines the Node class
-class Node {
+// Defines the DiskNode class
+class DiskNode {
 public:
-    // Default Constructor
-    Node() { 
-        lru_threshold = 0; // Default value is clean disk till empty
-    };
+    DiskNode() { }; // Default Constructor
+    DiskNode(int diskSize, int DiskNodeID);
 
-    Node(int diskSize, int nodeID);
-
-    void instantiateNode(int diskSize, int nodeID);
+    void instantiateDiskNode(int diskSize, int DiskNodeID);
     /**
     Determines if the event is a disk read or write, and calls the appropriate
-    private methods to handle that type. 
+    private methods to handle that type.
 
     NOTE: this could be changed to a bool to handle requests bigger than total disk size
     **/
     bool processEvent(Event event);
 
     /**
-    * Returns the amount of the nodes "disk" that is in use
+    * Returns the amount of the DiskNodes "disk" that is in use
     **/
     int getDiskUsed();
 

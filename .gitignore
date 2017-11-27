@@ -1,6 +1,14 @@
 lib/*
 *.o
+*.Po
 *.bin
 simulator
 *.csv
 
+*/deps*
+*.pyc
+*.pkl
+*exclude/*
+*.dirstamp
+
+autom4te.cache*
