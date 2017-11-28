@@ -24,6 +24,15 @@ class RandomLoadBalancer {
             eventSize      - The size threshold of generated events.
         */
         void run(int inputSize, bool fixedEventSize, int eventSize);
+
+        /*
+        Runs the load balancer on a specified pickle file containing disk event data. 
+
+        Parameters:
+            pickleFile - String specifying the path/filename of the pickle file containing
+                         the data to be run through the load balancer.
+        */
+        void runPickle(std::string pickleFile);
     private:
         Controller *controller;     // Controller to be used by the load balancer
         int numNodes;               // The number of nodes managed by the controller
