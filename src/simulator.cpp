@@ -32,13 +32,13 @@ int main() {
     //
     // c.shutdownController();
 
-    PickleLoader ploader;
-    int firstLength =  ploader.loadPickle("exclude/tracedata00.pkl");
-    for (int i = 0; i < firstLength; i++) {
-        PickleData element = ploader.itemAtIndex("exclude/tracedata00.pkl", i);
-        std::cout << element.timestamp << " " << element.elapsedTime << " " << element.isWrite <<
-            " " << element.fileName << " " << element.diskNum << " " << element.size << std::endl;
-    }
+    // PickleLoader ploader;
+    // int firstLength =  ploader.loadPickle("exclude/tracedata00.pkl");
+    // for (int i = 0; i < firstLength; i++) {
+    //     PickleData element = ploader.itemAtIndex("exclude/tracedata00.pkl", i);
+    //     std::cout << element.timestamp << " " << element.elapsedTime << " " << element.isWrite <<
+    //         " " << element.fileName << " " << element.diskNum << " " << element.size << std::endl;
+    // }
     
     return 0;
 }
