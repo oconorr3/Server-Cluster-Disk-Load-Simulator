@@ -1,5 +1,6 @@
 #include "controller.h"
 #include "randomlb.h"
+#include "roundrobinlb.h"
 #include "pickleloader.h"
 // #include "sklearn.h"
 
@@ -8,7 +9,7 @@
 // For testing
 int main() {
     Controller c(20, 1000, 1000000);
-    RandomLoadBalancer lb(&c);
+    RoundRobinLBalancer lb(&c);
 
     lb.runPickle("exclude/tracedata00.pkl");
 

@@ -1,8 +1,10 @@
 // Author: Justin P. Finger
 
-#include "roundrobinlb.h"
 #include "event.h"
+#include "pickleloader.h"
+#include "roundrobinlb.h"
 
+/*** Public Methods ***/
 /*
     Creates a Round Robin load balancer that uses a specified controller
 */
@@ -31,6 +33,27 @@ void RoundRobinLBalancer::run(int inputSize, bool fixedEventSize, int eventSize)
     }
 }
 
+/*
+    Runs the load balancer on a specified pickle file containing disk event data. 
+
+    Parameters:
+        pickleFile - String specifying the path/filename of the pickle file containing
+                     the data to be run through the load balancer.
+*/
+void RoundRobinLBalancer::runPickle(std::string pickleFile) {
+    PickleLoader ploader;
+    int pickleLength =  ploader.loadPickle(pickleFile);
+    int nodeID = 0;
+    for (int i = 0; i < pickleLength; i++) {
+        PickleData element = ploader.itemAtIndex(pickleFile, i);
+        if (element.isWrite) {  
+            nodeID = i % numNodes;
+            controller->addEvent(Event(element.size, nodeID, DISKWRITE));
+        }
+    }
+}
+
+/*** Private Methods ***/
 /*
     Runs the fixed event size variant of the load balancer. 
 
