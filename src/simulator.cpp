@@ -8,7 +8,6 @@
 
 // For testing
 int main() {
-<<<<<<< HEAD
     Controller c(20, 10000, 550);
     RandomLoadBalancer lb(&c);
     lb.run(15000, true, 50);
@@ -34,18 +33,6 @@ int main() {
     //
     c.shutdownController();
 
-=======
-    Controller c(20, 1000, 1000000);
-    RoundRobinLBalancer lb(&c);
-
-    lb.runPickle("exclude/tracedata00.pkl");
-
-    char file1[] = "time1.csv";
-    c.printNodeValues(file1);
-
-    c.shutdownController();
-
->>>>>>> 791229edefd062f42721bcb911aa00bb5c6fda43
     // PickleLoader ploader;
     // int firstLength =  ploader.loadPickle("exclude/tracedata00.pkl");
     // for (int i = 0; i < firstLength; i++) {
