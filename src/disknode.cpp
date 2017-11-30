@@ -5,6 +5,7 @@
 DiskNode::DiskNode(int diskSize, int nodeID) {
     this->diskSize = diskSize;
     this->nodeID   = nodeID;
+    this->diskUsed = 0;
     lru_threshold  = ((diskSize * 30) / 100);  // 70% of disk space (NOTE: Maybe make this a parameter?)
     lru_disk_free  = diskSize - lru_threshold; // Exact amount of disk free when disk is filled to lru_threshold
 }
@@ -12,6 +13,7 @@ DiskNode::DiskNode(int diskSize, int nodeID) {
 void DiskNode::instantiateDiskNode(int diskSize, int nodeID) {
     this->diskSize = diskSize;
     this->nodeID   = nodeID;
+    this->diskUsed = 0;
     lru_threshold  = ((diskSize * 70) / 100);  // 70% of disk space (NOTE: Maybe make this a parameter?)    
     lru_disk_free  = diskSize - lru_threshold; // Exact amount of disk free when disk is filled to lru_threshold
 }
