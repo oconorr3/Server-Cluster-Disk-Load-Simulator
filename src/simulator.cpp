@@ -7,11 +7,11 @@
 
 // For testing
 int main() {
-    // Controller c(20, 10000, 550);
-    // RandomLoadBalancer lb(&c);
-    // lb.run(1500, true, 50);
-    // char file1[] = "time1.csv";
-    // c.printNodeValues(file1);
+    Controller c(20, 10000, 550);
+    RandomLoadBalancer lb(&c);
+    lb.run(15000, true, 50);
+    char file1[] = "time1.csv";
+    c.printNodeValues(file1);
     //
     // lb.run(1500, true, 50);
     // char file2[] = "time2.csv";
@@ -30,15 +30,15 @@ int main() {
     // c.printNodeValues(file5);
     //
     //
-    // c.shutdownController();
+    c.shutdownController();
 
-    PickleLoader ploader;
-    int firstLength =  ploader.loadPickle("exclude/tracedata00.pkl");
-    for (int i = 0; i < firstLength; i++) {
-        PickleData element = ploader.itemAtIndex("exclude/tracedata00.pkl", i);
-        std::cout << element.timestamp << " " << element.elapsedTime << " " << element.isWrite <<
-            " " << element.fileName << " " << element.diskNum << " " << element.size << std::endl;
-    }
+    // PickleLoader ploader;
+    // int firstLength =  ploader.loadPickle("exclude/tracedata00.pkl");
+    // for (int i = 0; i < firstLength; i++) {
+    //     PickleData element = ploader.itemAtIndex("exclude/tracedata00.pkl", i);
+    //     std::cout << element.timestamp << " " << element.elapsedTime << " " << element.isWrite <<
+    //         " " << element.fileName << " " << element.diskNum << " " << element.size << std::endl;
+    // }
     
     return 0;
 }

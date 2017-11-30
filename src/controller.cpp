@@ -86,6 +86,11 @@ void Controller::shutdownController() {
         cvList[i].notify_all();
         tpool.at(i).join();
     }
+    delete [] queueList;
+    delete [] queueLock;
+    delete [] cvList;
+    delete [] threadBoundries;
+    delete [] nodeList;
 }
 
 /**
