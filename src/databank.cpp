@@ -97,27 +97,37 @@ std::vector<double> DataBank::getTimes() {
 
 
 void DataBank::exportData() {
+    std::cout << "exporting data from databank\n";
+
     //calc the averages which will be its own seperate .csv
     std::ofstream averagesFile;
     averagesFile.open("averages.csv");
-    std::vector<double> averages = calcAveragesByTime();
+    if (!averagesFile.is_open()) {
+        std::cout << "averages file could not be opened"<< std::endl;
+    } else {
+        std::vector<double> averages = calcAveragesByTime();
 
-    for (int i = 0; i < averages.size(); i++) {
-        averagesFile << averages[i] << "\n";
+        for (int i = 0; i < averages.size(); i++) {
+            averagesFile << averages[i] << "\n";
+        }
+        averagesFile.close();
     }
-    averagesFile.close();
+
 
     //write the data out to a .csv where each row is a node and each column is a time point
     std::ofstream dataFile;
     dataFile.open("data.csv");
-    for (int i = 0; i < numberOfNodes; i++) {
-        for (int j = 0; j < nodeLoadData[i].size(); j++) {
-            dataFile << nodeLoadData[i][j] << " ";
+    if (!dataFile.is_open()) {
+        std::cout << "data file could not be opened"<< std::endl;
+    } else {
+        for (int i = 0; i < numberOfNodes; i++) {
+            for (int j = 0; j < nodeLoadData[i].size(); j++) {
+                dataFile << nodeLoadData[i][j] << " ";
+            }
+            dataFile << "\n";
         }
-        dataFile << "\n";
+        dataFile.close();
     }
-    dataFile.close();
-
 }
 
 
