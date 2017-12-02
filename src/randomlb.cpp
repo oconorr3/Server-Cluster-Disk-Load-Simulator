@@ -11,6 +11,8 @@
 RandomLoadBalancer::RandomLoadBalancer(Controller *controller) {
     this->controller = controller;
     numNodes = controller->getNumNodes();
+    timestart = 0;
+    timeend = 0;
 }
 
 /*
@@ -40,16 +42,36 @@ void RandomLoadBalancer::run(int inputSize, bool fixedEventSize, int eventSize) 
         pickleFile - String specifying the path/filename of the pickle file containing
                      the data to be run through the load balancer.
 */
-void RandomLoadBalancer::runPickle(std::string pickleFile) {
+void RandomLoadBalancer::runPickle(std::string pickleFile, int numSamples) {
     PickleLoader ploader;
     int pickleLength =  ploader.loadPickle(pickleFile);
     int nodeID = 0;
-    for (int i = 0; i < pickleLength; i++) {
-        PickleData element = ploader.itemAtIndex(pickleFile, i);
+
+    
+
+    PickleData element = ploader.itemAtIndex(pickleFile, 0);    // first element
+    timestart = element.timestamp;
+
+    element = ploader.itemAtIndex(pickleFile, pickleLength - 1);    // first element
+    timeend = element.timestamp;
+
+    int sampleTimeInterval = (timeend - timestart) / numSamples;
+    std::cout << "Interval: " << sampleTimeInterval << std::endl;
+    int count = 0;
+    int i = 0;
+    //for (int i = 0; i < 4; i++) {
+        while (count < 5) {
+        //std::cout << "here" << std::endl;
+        element = ploader.itemAtIndex(pickleFile, i);
+        //std::cout << element.isWrite << std:: endl;
         if (element.isWrite) {
+            count++;
+            std::cout << element.size << std::endl;
             nodeID = generateNodeID();
+            std::cout << nodeID << std::endl;
             controller->addEvent(Event(element.size, nodeID, DISKWRITE));
         }
+        i++;
     }
 }
 

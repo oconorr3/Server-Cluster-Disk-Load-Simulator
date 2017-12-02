@@ -32,10 +32,12 @@ class RandomLoadBalancer {
             pickleFile - String specifying the path/filename of the pickle file containing
                          the data to be run through the load balancer.
         */
-        void runPickle(std::string pickleFile);
+        void runPickle(std::string pickleFile, int numSamples);
     private:
         Controller *controller;     // Controller to be used by the load balancer
         int numNodes;               // The number of nodes managed by the controller
+        int timestart;
+        int timeend;
 
         /* PRIVATE FUNCTIONS */
         

@@ -28,6 +28,7 @@ public:
 
 private:
     /* PRIVATE VARIABLE DECLARATIONS */
+    int timestamp;                  // The current time on the node
     int diskSize;                   // The total disk space available
     int diskUsed;                   // The bytes used on the disk
     int nodeID;                     // ID of the node
