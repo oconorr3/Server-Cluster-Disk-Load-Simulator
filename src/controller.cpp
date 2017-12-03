@@ -112,22 +112,36 @@ void Controller::spawnNodes() {
 void Controller::spawnThreads() {
     // Determine the number of nodes each thread must manage
     int range_size = numNodes / numThreads;
-    std::cout << "numNodes: " << numNodes << ", numThreads: " << numThreads << ", range_size: " << range_size << std::endl;
+
+    // Debug printing
+    #ifdef DEBUG
+        std::cout << "numNodes: " << numNodes << ", numThreads: " << numThreads << ", range_size: " << range_size << std::endl;
+    #endif
+
     int range_start = 0;
     int range_end = range_size;
     // Spawn the threadds and assign them partitions of the node array to manage
     for (int i = 0; i < numThreads - 1; i++) {
         threadBoundries[i] = range_end; // Track the end of each thread's partition: used for assiging work to threads
         tpool.push_back(std::thread(&Controller::managerThread, this, range_start, range_end, i));
-        std::cout << "Thread " << i << ": range_start = " << range_start <<", range_end = " << range_end << std::endl;        
+
+        // Debug printing -> check thread ranges
+        #ifdef DEBUG
+            std::cout << "Thread " << i << ": range_start = " << range_start <<", range_end = " << range_end << std::endl;        
+        #endif
+
         range_start = range_end;
         range_end += range_size;
     }
     // For last thread, handle different end of range
     range_end = numNodes;
-    std::cout << "Thread " << numThreads -1 << ": range_start = " << range_start <<", range_end = " << range_end << std::endl;
-    threadBoundries[numThreads - 1] = numNodes;
-    tpool.push_back(std::thread(&Controller::managerThread, this, range_start, numNodes, numThreads - 1));
+    threadBoundries[numThreads - 1] = range_end;
+    tpool.push_back(std::thread(&Controller::managerThread, this, range_start, range_end, numThreads - 1));
+
+    // Debug printing -> check thread ranges
+    #ifdef DEBUG
+        std::cout << "Thread " << numThreads - 1 << ": range_start = " << range_start <<", range_end = " << range_end << std::endl;        
+    #endif
 }
 
 
@@ -183,7 +197,7 @@ void Controller::printNodeValues(char * filename) {
 }
 
 void Controller::waitForResults() {
-        // Check that each managerThread thread has finished processing all events in their
+    // Check that each managerThread thread has finished processing all events in their
     // individual work queue before setting shutdown to true and destroying the threads.
     for (int i = 0; i < numThreads; i++) {
         std::unique_lock<std::mutex> queuelock(queueLock[i]);

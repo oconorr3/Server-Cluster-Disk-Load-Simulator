@@ -12,8 +12,8 @@
 RandomLoadBalancer::RandomLoadBalancer(Controller *controller) {
     this->controller = controller;
     numNodes = controller->getNumNodes();
-    timestart = 0;
-    timeend = 0;
+    time_start = 0;
+    time_end = 0;
     srand(time(0));
 }
 
@@ -45,35 +45,26 @@ void RandomLoadBalancer::run(int inputSize, bool fixedEventSize, int eventSize) 
                      the data to be run through the load balancer.
 */
 void RandomLoadBalancer::runPickle(std::string pickleFile, int numSamples) {
+    int nodeID = 0;                 // Used to assign events to a specific node
+    int sampleTimeInterval = 0;     // The discrete time interval (in microsecond) at which node Load samples are taken
     PickleLoader ploader;
-    int pickleLength =  ploader.loadPickle(pickleFile);
-    int nodeID = 0;
+    int pickleLength =  ploader.loadPickle(pickleFile);     // Load in specified pickle 
 
-    
+    PickleData element = ploader.itemAtIndex(pickleFile, 0);     // Get time of first event
+    time_start = element.timestamp;
 
-    PickleData element = ploader.itemAtIndex(pickleFile, 0);    // first element
-    timestart = element.timestamp;
+    element = ploader.itemAtIndex(pickleFile, pickleLength - 1); // Get time of the second event
+    time_end = element.timestamp;
 
-    element = ploader.itemAtIndex(pickleFile, pickleLength - 1);    // first element
-    timeend = element.timestamp;
+    sampleTimeInterval = (time_end - time_start) / numSamples;     // Calculate discrete time sampling interval
 
-    int sampleTimeInterval = (timeend - timestart) / numSamples;
-    std::cout << "Interval: " << sampleTimeInterval << std::endl;
-    int count = 0;
-    int i = 0;
-    //for (int i = 0; i < 4; i++) {
-        while (count < 5) {
-        //std::cout << "here" << std::endl;
+    // Read events from the pickle and pass them on to the controller.
+    for (int i = 0; i < pickleLength; i++) {
         element = ploader.itemAtIndex(pickleFile, i);
-        //std::cout << element.isWrite << std:: endl;
         if (element.isWrite) {
-            count++;
-            std::cout << element.size << std::endl;
             nodeID = generateNodeID();
-            std::cout << nodeID << std::endl;
             controller->addEvent(Event(element.size, nodeID, DISKWRITE));
         }
-        i++;
     }
 }
 

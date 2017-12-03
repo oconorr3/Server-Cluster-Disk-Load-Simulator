@@ -10,7 +10,9 @@
 */
 RoundRobinLBalancer::RoundRobinLBalancer(Controller *controller) {
     this->controller = controller;
-    numNodes = controller->getNumNodes();
+    this->time_start = 0;
+    this->time_end = 0;
+    this->numNodes = controller->getNumNodes();
 }
 
 /*
@@ -40,10 +42,20 @@ void RoundRobinLBalancer::run(int inputSize, bool fixedEventSize, int eventSize)
         pickleFile - String specifying the path/filename of the pickle file containing
                      the data to be run through the load balancer.
 */
-void RoundRobinLBalancer::runPickle(std::string pickleFile) {
+void RoundRobinLBalancer::runPickle(std::string pickleFile, int numSamples) {
+    int nodeID = 0;                 // Used to assign events to a specific node
+    int sampleTimeInterval = 0;     // The discrete time interval (in microsecond) at which node Load samples are taken
     PickleLoader ploader;
-    int pickleLength =  ploader.loadPickle(pickleFile);
-    int nodeID = 0;
+    int pickleLength =  ploader.loadPickle(pickleFile);     // Load in specified pickle 
+
+    PickleData element = ploader.itemAtIndex(pickleFile, 0);     // Get time of first event
+    time_start = element.timestamp;
+
+    element = ploader.itemAtIndex(pickleFile, pickleLength - 1); // Get time of the second event
+    time_end = element.timestamp;
+
+    sampleTimeInterval = (time_end - time_start) / numSamples;     // Calculate discrete time sampling interval
+
     for (int i = 0; i < pickleLength; i++) {
         PickleData element = ploader.itemAtIndex(pickleFile, i);
         if (element.isWrite) {  

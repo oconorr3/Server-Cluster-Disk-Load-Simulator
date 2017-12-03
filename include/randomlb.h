@@ -36,8 +36,8 @@ class RandomLoadBalancer {
     private:
         Controller *controller;     // Controller to be used by the load balancer
         int numNodes;               // The number of nodes managed by the controller
-        int timestart;
-        int timeend;
+        int time_start;             // Starting timestamp of dataset for discrete time
+        int time_end;               // Ending timestamp of dataset for discrete time
 
         /* PRIVATE FUNCTIONS */
         
