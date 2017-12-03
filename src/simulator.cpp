@@ -11,10 +11,10 @@
 
 // For testing
 int main() {
-    Controller c(2, 8, 1000000);
+    Controller c(3, 16, 1000000);
     RandomLoadBalancer lb(&c);
     lb.runPickle("exclude/tracedata00.pkl", 150);
-    std::this_thread::sleep_for (std::chrono::seconds(5));
+    c.waitForResults();
     char file1[] = "time1.csv";
     c.printNodeValues(file1);
     

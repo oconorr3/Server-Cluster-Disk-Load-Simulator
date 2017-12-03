@@ -3,7 +3,8 @@
 #include "event.h"
 #include "pickleloader.h"
 #include "randomlb.h"
-
+#include <ctime>
+#include <cstdlib>
 /*** Public Methods ***/
 /*
     Creates a Random load balancer that uses a specified controller
@@ -13,6 +14,7 @@ RandomLoadBalancer::RandomLoadBalancer(Controller *controller) {
     numNodes = controller->getNumNodes();
     timestart = 0;
     timeend = 0;
+    srand(time(0));
 }
 
 /*

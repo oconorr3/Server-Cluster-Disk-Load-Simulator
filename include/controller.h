@@ -35,7 +35,7 @@ class Controller {
 
 
         void printNodeValues(char * filename);         // Prints the values of nodes in nodeID order
-
+        void waitForResults();
 
     private:
         bool shutdown;
