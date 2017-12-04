@@ -19,6 +19,4 @@ def load_pickle(filename):
     with open(filename) as data_file:
         pickle_data[filename] = pickle.load(data_file)
     print("[Python] Finished loading file.")
-    print(pickle_data[filename][0])
-    print(len(pickle_data[filename]))
     return pickle_data[filename]

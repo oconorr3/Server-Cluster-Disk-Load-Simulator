@@ -47,8 +47,7 @@ PickleData PickleLoader::itemAtIndex(std::string pickleFile, int index) {
     } catch(boost::python::error_already_set const &) {
         std::string perror_str = parse_python_exception();
         std::cout << "Error in Python: " << perror_str << std::endl;
-        pickleData.initialized = false;
-
+        
         // Return entirely uninitialized structure in the event of failure
         return pickleData;
     }
