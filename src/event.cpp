@@ -18,6 +18,12 @@ Event::Event(int size_b, int nodeID, EventType type) {
     this->type   = type;   
 }
 
+Event::Event() {
+    this->size_b = 0;
+    this->nodeID = 0;
+    this->type   = DISKREAD;   
+}
+
 /**
     Returns the size in bytes of the disk read/write request
 **/

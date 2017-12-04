@@ -3,28 +3,18 @@
 #include "roundrobinlb.h"
 #include "pickleloader.h"
 // #include "sklearn.h"
+#include "variance_fit.h"
 
 #include <iostream>
 
 // For testing
 int main() {
-    Controller c(20, 1000, 1000000);
-    RoundRobinLBalancer lb(&c);
-
-    lb.runPickle("exclude/tracedata00.pkl");
-
+    Controller c(1, 1000, 1000000);
+    VarianceFit lb(&c);
+    lb.runVarianceFit("exclude/tracedata00.pkl", 150);
+    //lb.run(750, true, 500000);
     char file1[] = "time1.csv";
     c.printNodeValues(file1);
-
-    c.shutdownController();
-
-    // PickleLoader ploader;
-    // int firstLength =  ploader.loadPickle("exclude/tracedata00.pkl");
-    // for (int i = 0; i < firstLength; i++) {
-    //     PickleData element = ploader.itemAtIndex("exclude/tracedata00.pkl", i);
-    //     std::cout << element.timestamp << " " << element.elapsedTime << " " << element.isWrite <<
-    //         " " << element.fileName << " " << element.diskNum << " " << element.size << std::endl;
-    // }
-    
+    c.shutdownController();    
     return 0;
 }

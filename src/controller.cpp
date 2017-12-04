@@ -172,3 +172,25 @@ void Controller::printNodeValues(char * filename) {
         myfile << nodeList[i].getDiskUsed() << "\n";
     }
 }
+
+int Controller::getNodeValue(int index) {
+    return nodeList[index].getDiskUsed();
+}
+
+void Controller::waitUntilDone() {
+    // Check that each managerThread thread has finished processing all events in their
+    // individual work queue before setting shutdown to true and destroying the threads.
+    for (int i = 0; i < numThreads; i++) {
+        std::unique_lock<std::mutex> queuelock(queueLock[i]);
+        while (!queueList[i].empty()) {
+            cv.wait(queuelock);
+        }
+        queuelock.unlock();
+    }
+}
+
+void Controller::resetController() {
+    for (int i = 0; i < numNodes; i++) {
+        nodeList[i].resetDisk();
+    }
+}

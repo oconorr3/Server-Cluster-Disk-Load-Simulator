@@ -36,6 +36,12 @@ class Controller {
 
         void printNodeValues(char * filename);         // Prints the values of nodes in nodeID order
 
+        int getNodeValue(int index);
+
+        void waitUntilDone();
+        
+        void resetController();
+
 
     private:
         bool shutdown;

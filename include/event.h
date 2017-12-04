@@ -21,6 +21,7 @@ class Event {
             type      - The type of the event (DISKREAD or DISKWRITE)
         **/
         Event(int size_b, int nodeID, EventType type);
+        Event();
 
         /**** PUBLIC METHOD DECLARATIONS ****/
 

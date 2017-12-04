@@ -25,6 +25,8 @@ public:
     **/
     int getDiskUsed();
 
+    void resetDisk();
+
 
 private:
     /* PRIVATE VARIABLE DECLARATIONS */
