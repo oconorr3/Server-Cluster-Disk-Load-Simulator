@@ -12,8 +12,12 @@
 #include <vector>
 
 #include "event.h"
+#include "databank.h"
 #include "disknode.h"
 #include <string>
+
+
+#define DEBUG //comment out to turn off debug mode
 
 // Definition of the Controller Class
 class Controller {
@@ -33,19 +37,26 @@ class Controller {
         **/
         void shutdownController();
 
+        void setReportInterval(int interval, int numSamples);
+
+
+        int getNodeValue(int index);
+        
+        void resetController();
 
         void printNodeValues(char * filename);         // Prints the values of nodes in nodeID order
-
+        void waitForResults();  // Waits until all currently assigned tasks are finished across all manager threads
 
     private:
+        DataBank *databank;
         bool shutdown;
         int numNodes;                   // Number of nodes to be simulated by the controller
         int numThreads;                 // Number of threads to be used by the controller
         int nodeSize;                   // The size (in bytes) of th disk capacity for a node
-        DiskNode * nodeList;                // Pointer to array of nodes tracked by the controller. Populated by spawnNodes()
+        DiskNode * nodeList;            // Pointer to array of nodes tracked by the controller. Populated by spawnNodes()
         std::vector<std::thread> tpool; // Tracks the threads used by the Controller to track nodes
         std::condition_variable cv;     // Condition variable used to synchronise and signal task queue availability
-
+        
         // Thread work distribution/synchronization variables
         std::queue<Event> *queueList;   // List of work queues. Each thread has one of these queues assigned to it
         std::mutex *queueLock;          // List of locks for the work queues

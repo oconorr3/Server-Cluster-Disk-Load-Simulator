@@ -19,6 +19,9 @@ Controller::Controller(int numThreads, int numNodes, int nodeSize) {
     this->nodeSize    = nodeSize;   // Track node disk size
     shutdown = false;               // Flag for joining threads
 
+    // Initialize Databank
+    databank = new DataBank(numNodes);
+
     // Initialize Thread Specific variables
     queueList = new std::queue<Event>[numThreads];      // Create work queue's
     queueLock = new std::mutex[numThreads];             // Create work queue locks
@@ -43,7 +46,7 @@ void Controller::addEvent(Event event) {
 
         // Since threadBoundries are stored in ascending order, this will only pass for the thread
         // which manages the desired node
-        if (nodeID <= threadBoundries[i]) {
+        if (nodeID < threadBoundries[i]) {
             // Lock the threads work queue
             std::unique_lock<std::mutex> work_queue_lock(queueLock[i]);
             queueList[i].push(event);
@@ -86,11 +89,17 @@ void Controller::shutdownController() {
         cvList[i].notify_all();
         tpool.at(i).join();
     }
+
+    for (int i = 0; i < numNodes; i++) {
+        nodeList[i].finalizeReport();
+    }
+    databank->exportData();
     delete [] queueList;
     delete [] queueLock;
     delete [] cvList;
     delete [] threadBoundries;
     delete [] nodeList;
+    delete databank;
 }
 
 /**
@@ -100,7 +109,7 @@ void Controller::spawnNodes() {
     nodeList = new DiskNode[numNodes];
     // Initialize values of the nodes in nList
     for (int i = 0; i < numNodes; i++) {
-        nodeList[i].instantiateDiskNode(nodeSize, i);
+        nodeList[i].instantiateDiskNode(nodeSize, i, databank);
     }
 }
 
@@ -112,18 +121,36 @@ void Controller::spawnNodes() {
 void Controller::spawnThreads() {
     // Determine the number of nodes each thread must manage
     int range_size = numNodes / numThreads;
+
+    // Debug printing
+    #ifdef DEBUG
+        std::cout << "numNodes: " << numNodes << ", numThreads: " << numThreads << ", range_size: " << range_size << std::endl;
+    #endif
+
     int range_start = 0;
-    int range_end = range_size - 1;
+    int range_end = range_size;
     // Spawn the threadds and assign them partitions of the node array to manage
     for (int i = 0; i < numThreads - 1; i++) {
         threadBoundries[i] = range_end; // Track the end of each thread's partition: used for assiging work to threads
         tpool.push_back(std::thread(&Controller::managerThread, this, range_start, range_end, i));
+
+        // Debug printing -> check thread ranges
+        #ifdef DEBUG
+            std::cout << "Thread " << i << ": range_start = " << range_start <<", range_end = " << range_end << std::endl;        
+        #endif
+
         range_start = range_end;
-        range_end += range_size - 1;
+        range_end += range_size;
     }
     // For last thread, handle different end of range
+    range_end = numNodes;
     threadBoundries[numThreads - 1] = range_end;
-    tpool.push_back(std::thread(&Controller::managerThread, this, range_start, numNodes - 1, numThreads - 1));
+    tpool.push_back(std::thread(&Controller::managerThread, this, range_start, range_end, numThreads - 1));
+
+    // Debug printing -> check thread ranges
+    #ifdef DEBUG
+        std::cout << "Thread " << numThreads - 1 << ": range_start = " << range_start <<", range_end = " << range_end << std::endl;        
+    #endif
 }
 
 
@@ -143,7 +170,7 @@ void Controller::managerThread(int nodeRangeStart, int nodeRangeEnd, int id) {
             if (!queueList[id].empty()) {
                 event->copyValues(queueList[id].front());
                 // If task at the top of the queue is for a node managed by this thread, grab it.
-                if (event->getNodeID() >= nodeRangeStart && event->getNodeID() <= nodeRangeEnd) {
+                if (event->getNodeID() >= nodeRangeStart && event->getNodeID() < nodeRangeEnd) {
                     queueList[id].pop();
                     taskAcquired = true;
                 }
@@ -175,5 +202,32 @@ void Controller::printNodeValues(char * filename) {
     myfile.open(filename);
     for (int i = 0; i < numNodes; i++) {
         myfile << nodeList[i].getDiskUsed() << "\n";
+    }
+}
+
+int Controller::getNodeValue(int index) {
+    return nodeList[index].getDiskUsed();
+}
+
+void Controller::waitForResults() {
+    // Check that each managerThread thread has finished processing all events in their
+    // individual work queue before setting shutdown to true and destroying the threads.
+    for (int i = 0; i < numThreads; i++) {
+        std::unique_lock<std::mutex> queuelock(queueLock[i]);
+        while (!queueList[i].empty()) {
+            cv.wait(queuelock);
+        }
+        queuelock.unlock();
+    }
+}
+
+void Controller::resetController() {
+    for (int i = 0; i < numNodes; i++) {
+        nodeList[i].resetDisk();
+    }
+}
+void Controller::setReportInterval(int interval, int numSamples) {
+    for (int i = 0; i < numNodes; i++) {
+        nodeList[i].setReportInterval(interval, numSamples);
     }
 }

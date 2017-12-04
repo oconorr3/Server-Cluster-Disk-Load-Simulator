@@ -12,3 +12,5 @@ simulator
 *.dirstamp
 
 autom4te.cache*
+
+*.vscode*

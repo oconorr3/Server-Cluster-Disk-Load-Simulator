@@ -108,7 +108,7 @@ void DataBank::exportData() {
         std::vector<double> averages = calcAveragesByTime();
 
         for (int i = 0; i < averages.size(); i++) {
-            averagesFile << averages[i];
+            averagesFile << averages[i] << "\n";
         }
         averagesFile.close();
     }
