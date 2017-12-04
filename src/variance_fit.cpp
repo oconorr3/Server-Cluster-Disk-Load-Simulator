@@ -49,9 +49,14 @@ void VarianceFit::runVarianceFit(std::string pickleFile, int numSamples) {
     time_start = element.timestamp;
 
     element = ploader.itemAtIndex(pickleFile, numEvents - 1); // Get time of the second event
-    time_end = element.timestamp;
-
+    time_end = element.timestamp - time_start;//element.timestamp;
+    time_start = 0;
     sampleTimeInterval = (time_end - time_start) / numSamples;     // Calculate discrete time sampling interval
+
+    std::cout << "startTime: " << time_start << std::endl;
+    std::cout << "endTime: " << time_end << std::endl;
+    std::cout << "interval: " << sampleTimeInterval << std::endl;
+    controller->setReportInterval(sampleTimeInterval, numSamples);
 
     /***
      * 
@@ -61,30 +66,32 @@ void VarianceFit::runVarianceFit(std::string pickleFile, int numSamples) {
     // Controller controller(1, 20, 100000);
     // int numEvents =  ploader.loadPickle("exclude/tracedata00.pkl");
     int counter = 0;
-    int limit = 10; // Limit number of requests w/ 0 indexing
+    int limit = 2; // Limit number of requests w/ 0 indexing
 
     // Count number of events in the pickle that is a write request
     for (int i = 0; i < numEvents; i++) {
         element = ploader.itemAtIndex(pickleFile, i);
         if (element.isWrite) {
             counter++;
-            // if (counter > limit) {
-            //     break;
-            // }
+            if (counter > limit) {
+                break;
+            }
         }
     }
 
     // Create an array to hold size of all write requests
     int size_data[counter];
+    int timestamp_data[counter];
     int index = 0;
     for (int i = 0; i < numEvents; i++) {
         element = ploader.itemAtIndex(pickleFile, i);
         if (element.isWrite) {
             size_data[index] = element.size;
+            timestamp_data[index] = element.timestamp - time_start;
             index++;
-            // if (index > limit) {
-            //     break;
-            // }
+            if (index > limit) {
+                break;
+            }
         }
     }
 
@@ -107,7 +114,7 @@ void VarianceFit::runVarianceFit(std::string pickleFile, int numSamples) {
                     controller->addEvent(list_best_event[k]);
                 }
             }
-            e = Event(size_data[i], j, DISKWRITE);
+            e = Event(size_data[i], j, DISKWRITE, timestamp_data[i]);
             controller->addEvent(e);
             controller->waitForResults();
             float load[numNodes];
@@ -127,6 +134,7 @@ void VarianceFit::runVarianceFit(std::string pickleFile, int numSamples) {
                 }
                 start_comparison = 0;
             }
+            controller->waitForResults();
             controller->resetController();
         }
         list_best_event[i] = best_event;
@@ -139,6 +147,7 @@ void VarianceFit::runVarianceFit(std::string pickleFile, int numSamples) {
     }
     std::cout << "\n";
 
+    controller->waitForResults();
     controller->resetController();
     for (int i = 0; i < counter; i++) {
         if (list_best_event[i].getEventType() == DISKWRITE) {

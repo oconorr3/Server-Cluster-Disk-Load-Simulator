@@ -109,6 +109,9 @@ int DiskNode::getDiskUsed() {
 
 void DiskNode::resetDisk() {
     diskUsed = 0;
+    timestamp = 0;
+    nextReportTime = 0;
+    samplesProcessed = 0;
 }
 
 void DiskNode::setReportInterval(int interval, int numSamples) {
