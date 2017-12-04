@@ -15,7 +15,15 @@
 Event::Event(int size_b, int nodeID, EventType type) {
     this->size_b = size_b;
     this->nodeID = nodeID;
-    this->type   = type;   
+    this->type   = type; 
+    this->timestamp = 0;  
+}
+
+Event::Event(int size_b, int nodeID, EventType type, int timestamp) {
+    this->size_b = size_b;
+    this->nodeID = nodeID;
+    this->type   = type; 
+    this->timestamp = timestamp;    
 }
 
 /**
@@ -36,8 +44,13 @@ int Event::getNodeID() {
     return nodeID;
 }
 
+int Event::getTimestamp() {
+    return timestamp;
+}
+
 void Event::copyValues(Event e) {
     size_b = e.getEventSize();
     nodeID = e.getNodeID();
     type = e.getEventType();
+    timestamp = e.getTimestamp();
 }
