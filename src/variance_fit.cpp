@@ -109,7 +109,7 @@ void VarianceFit::runVarianceFit(std::string pickleFile, int numSamples) {
             }
             e = Event(size_data[i], j, DISKWRITE);
             controller->addEvent(e);
-            controller->waitUntilDone();
+            controller->waitForResults();
             float load[numNodes];
 
             for (int k = 0; k < numNodes; k++) {
