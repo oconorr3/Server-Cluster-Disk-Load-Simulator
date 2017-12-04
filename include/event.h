@@ -22,6 +22,8 @@ class Event {
         **/
         Event(int size_b, int nodeID, EventType type);
 
+        Event(int size_b, int nodeID, EventType type, int timestamp);
+
         /**** PUBLIC METHOD DECLARATIONS ****/
 
         /**
@@ -30,6 +32,8 @@ class Event {
         int getEventSize();
 
         int getNodeID();
+
+        int getTimestamp();
 
         void copyValues(Event e);
 
@@ -42,6 +46,7 @@ class Event {
         int size_b;         // Size of the event (in bytes)
         int nodeID;         // Numerical identifier of the node to which this event is assigned
         EventType type;     // The type of the event (disk read or write)
+        int timestamp;       // The time (in microseconds) at which the event occurred.
 };
 
 #endif

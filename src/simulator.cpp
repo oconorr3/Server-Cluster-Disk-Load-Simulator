@@ -12,7 +12,7 @@
 // For testing
 int main() {
     Controller c(4, 1000, 1000000);
-    RoundRobinLBalancer lb(&c);
+    RandomLoadBalancer lb(&c);
     lb.runPickle("exclude/tracedata00.pkl", 150);
     //lb.run(750, true, 500000);
     char file1[] = "time1.csv";

@@ -52,15 +52,17 @@ void RoundRobinLBalancer::runPickle(std::string pickleFile, int numSamples) {
     time_start = element.timestamp;
 
     element = ploader.itemAtIndex(pickleFile, pickleLength - 1); // Get time of the second event
-    time_end = element.timestamp;
-
+    time_end = element.timestamp - time_start;//element.timestamp;
+    time_start = 0;
     sampleTimeInterval = (time_end - time_start) / numSamples;     // Calculate discrete time sampling interval
+    
+    controller->setReportInterval(sampleTimeInterval, numSamples);
 
     for (int i = 0; i < pickleLength; i++) {
         PickleData element = ploader.itemAtIndex(pickleFile, i);
         if (element.isWrite) {  
             nodeID = i % numNodes;
-            controller->addEvent(Event(element.size, nodeID, DISKWRITE));
+            controller->addEvent(Event(element.size, nodeID, DISKWRITE, element.timestamp - time_start));
         }
     }
 }

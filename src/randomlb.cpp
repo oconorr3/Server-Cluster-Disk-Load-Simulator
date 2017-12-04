@@ -54,16 +54,21 @@ void RandomLoadBalancer::runPickle(std::string pickleFile, int numSamples) {
     time_start = element.timestamp;
 
     element = ploader.itemAtIndex(pickleFile, pickleLength - 1); // Get time of the second event
-    time_end = element.timestamp;
-
+    time_end = element.timestamp - time_start;//element.timestamp;
+    time_start = 0;
     sampleTimeInterval = (time_end - time_start) / numSamples;     // Calculate discrete time sampling interval
+
+    std::cout << "startTime: " << time_start << std::endl;
+    std::cout << "endTime: " << time_end << std::endl;
+    std::cout << "interval: " << sampleTimeInterval << std::endl;
+    controller->setReportInterval(sampleTimeInterval, numSamples);
 
     // Read events from the pickle and pass them on to the controller.
     for (int i = 0; i < pickleLength; i++) {
         element = ploader.itemAtIndex(pickleFile, i);
         if (element.isWrite) {
             nodeID = generateNodeID();
-            controller->addEvent(Event(element.size, nodeID, DISKWRITE));
+            controller->addEvent(Event(element.size, nodeID, DISKWRITE, element.timestamp - time_start));
         }
     }
 }

@@ -19,6 +19,9 @@ Controller::Controller(int numThreads, int numNodes, int nodeSize) {
     this->nodeSize    = nodeSize;   // Track node disk size
     shutdown = false;               // Flag for joining threads
 
+    // Initialize Databank
+    databank = new DataBank(numNodes);
+
     // Initialize Thread Specific variables
     queueList = new std::queue<Event>[numThreads];      // Create work queue's
     queueLock = new std::mutex[numThreads];             // Create work queue locks
@@ -86,11 +89,17 @@ void Controller::shutdownController() {
         cvList[i].notify_all();
         tpool.at(i).join();
     }
+
+    for (int i = 0; i < numNodes; i++) {
+        nodeList[i].finalizeReport();
+    }
+    databank->exportData();
     delete [] queueList;
     delete [] queueLock;
     delete [] cvList;
     delete [] threadBoundries;
     delete [] nodeList;
+    delete databank;
 }
 
 /**
@@ -100,7 +109,7 @@ void Controller::spawnNodes() {
     nodeList = new DiskNode[numNodes];
     // Initialize values of the nodes in nList
     for (int i = 0; i < numNodes; i++) {
-        nodeList[i].instantiateDiskNode(nodeSize, i);
+        nodeList[i].instantiateDiskNode(nodeSize, i, databank);
     }
 }
 
@@ -205,5 +214,11 @@ void Controller::waitForResults() {
             cv.wait(queuelock);
         }
         queuelock.unlock();
+    }
+}
+
+void Controller::setReportInterval(int interval, int numSamples) {
+    for (int i = 0; i < numNodes; i++) {
+        nodeList[i].setReportInterval(interval, numSamples);
     }
 }
