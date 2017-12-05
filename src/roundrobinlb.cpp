@@ -53,8 +53,8 @@ void RoundRobinLBalancer::runPickle(std::string pickleFile, int numSamples) {
 
     element = ploader.itemAtIndex(pickleFile, pickleLength - 1); // Get time of the second event
     time_end = element.timestamp - time_start;//element.timestamp;
-    time_start = 0;
-    sampleTimeInterval = (time_end - time_start) / numSamples;     // Calculate discrete time sampling interval
+    //time_start = 0;
+    sampleTimeInterval = time_end / numSamples;     // Calculate discrete time sampling interval
     
     controller->setReportInterval(sampleTimeInterval, numSamples);
 
