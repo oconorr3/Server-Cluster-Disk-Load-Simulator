@@ -9,6 +9,6 @@
 
 void seedRandomNumbers();
 
-int generateNodeID(numNodes);
+int generateNodeID(int numNodes);
 
 #endif

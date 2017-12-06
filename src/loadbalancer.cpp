@@ -7,6 +7,6 @@ void seedRandomNumbers() {
     srand(time(0));
 }
 
-int generateNodeID() {
+int generateNodeID(int numNodes) {
     return rand() % numNodes;
 }

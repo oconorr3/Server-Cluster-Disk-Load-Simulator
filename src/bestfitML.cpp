@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <cstring>
 
 #include "bestfitML.h"
 #include "event.h"
@@ -25,15 +26,17 @@ void BestFitMLBalancer::runPickle(std::string pickleFile, std::string networkFil
 
     for (int i = 0; i < pickleLength; i++) {
         PickleData element = ploader.itemAtIndex(pickleFile, i);
-        nodeID = findPredictiveBestFit(element, i);
-        controller->addEvent(Event(element.size, nodeID, DISKWRITE, element.timestamp - time_start));    
+        if (element.isWrite) {
+            nodeID = findPredictiveBestFit(ploader, pickleFile, element, i);
+            controller->addEvent(Event(element.size, nodeID, DISKWRITE, element.timestamp - time_start));    
+        }
     }
 }
 
 /*
     Takes a PickleData object and determines the best 
 */
-int BestFitMLBalancer::findPredicticveBestFit(std::string pickleFile, PickleData element, int index) {
+int BestFitMLBalancer::findPredictiveBestFit(PickleLoader ploader, std::string pickleFile, PickleData element, int index) {
     // Get prediction of next resource request
     std::string prediction = ml_model.getPredictionByEventNumber(ploader, pickleFile, 180);
     int predictSize = translatePrediction(prediction);
@@ -46,24 +49,19 @@ int BestFitMLBalancer::findPredicticveBestFit(std::string pickleFile, PickleData
 }
 
 int BestFitMLBalancer::translatePrediction(std::string prediction) {
-    int size = 0;
-    switch (prediction) {
-        case "small":
-            size = 2048;
-            break;
-        case "medium":
-            size = 4096;
-            break;
-        case "large":
-            size = 16384;
-            break;
-        case "huge":
-            size = 131072;
-            break;
-        default:
-            size = 300000;
+    if (!prediction.compare("small")) {
+        return 2048;
     }
-    return size;
+    if (!prediction.compare("medium")) {
+        return 4096;
+    }
+    if (!prediction.compare("large")) {
+        return 16384;
+    }
+    if (!prediction.compare("huge")) {
+        return 131072;
+    }
+    return 300000;
 }
 
 
@@ -94,14 +92,14 @@ void BestFitMLBalancer::initializeDiscreteTime(PickleLoader ploader, std::string
 
 
 
-std::vector<int> BestFitMLBalancer::sizeFit(vector<int> nextRequests, vector<int> bins)
+std::vector<int> BestFitMLBalancer::sizeFit(std::vector<int> nextRequests, std::vector<int> bins)
 {
-    vector<int> locations(nextRequests.size(), 0);
-    vector<int> sortedRequests = nextRequests;
+    std::vector<int> locations(nextRequests.size(), 0);
+    std::vector<int> sortedRequests = nextRequests;
     sort(sortedRequests.begin(), sortedRequests.end());
     
     for (unsigned i = sortedRequests.size(); i-- > 0;){
-        int largestBinIndex = find(bins.begin(), bins.end(), max_element(bins.begin(), bins.end())) - bins.begin();
+        int largestBinIndex = std::find(bins.begin(), bins.end(), *std::max_element(bins.begin(), bins.end())) - bins.begin();
         locations[find(sortedRequests.begin(), sortedRequests.end(), sortedRequests[i]) - sortedRequests.begin()] = largestBinIndex;
         bins[largestBinIndex] -= sortedRequests[i];
     }
