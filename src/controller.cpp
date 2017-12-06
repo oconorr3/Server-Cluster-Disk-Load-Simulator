@@ -234,7 +234,7 @@ void Controller::setReportInterval(int interval, int numSamples) {
 
 
 std::vector<int> Controller::extractCurrentLoad() {
-    waitForResults();   // inefficient, but leaving it for now for saftey
+    //waitForResults();   // inefficient, but leaving it for now for saftey
     
     // Create vector containing current load on diskNodes
     std::vector<int> diskLoad;

@@ -23,13 +23,18 @@ void BestFitMLBalancer::runPickle(std::string pickleFile, std::string networkFil
     // Initialize Machine Learning model
     // Sklearn ml_model; -> created in header, but may need initialized here instead
     ml_model.loadNetwork(networkFile);
-
-    for (int i = 0; i < pickleLength; i++) {
+    int i = 0;
+    int count = 0;
+    while (count < 57150) {
+    //for (int i = 0; i < pickleLength; i++) {
         PickleData element = ploader.itemAtIndex(pickleFile, i);
         if (element.isWrite) {
             nodeID = findPredictiveBestFit(ploader, pickleFile, element, i);
-            controller->addEvent(Event(element.size, nodeID, DISKWRITE, element.timestamp - time_start));    
+            std::cout << "Allocation Size: " << element.size << ", Desination Node: " << nodeID << std::endl;
+            controller->addEvent(Event(element.size, nodeID, DISKWRITE, element.timestamp - time_start));
+            count++;    
         }
+        i++;
     }
 }
 
@@ -38,7 +43,7 @@ void BestFitMLBalancer::runPickle(std::string pickleFile, std::string networkFil
 */
 int BestFitMLBalancer::findPredictiveBestFit(PickleLoader ploader, std::string pickleFile, PickleData element, int index) {
     // Get prediction of next resource request
-    std::string prediction = ml_model.getPredictionByEventNumber(ploader, pickleFile, 180);
+    std::string prediction = ml_model.getPredictionByEventNumber(ploader, pickleFile, index);
     int predictSize = translatePrediction(prediction);
 
     std::vector<int> requests;

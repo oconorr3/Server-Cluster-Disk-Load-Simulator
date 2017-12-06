@@ -33,6 +33,7 @@ void DiskNode::instantiateDiskNode(int diskSize, int nodeID, DataBank *databank)
  */
 bool DiskNode::processEvent(Event event) {
 
+    //std::cout << "HERE" << std::endl;
     // Update time counter
     if (!updateTime(event.getTimestamp())) {
         return false;
@@ -45,7 +46,14 @@ bool DiskNode::processEvent(Event event) {
         return processDiskRead();
     }
     else if (type == DISKWRITE) {
-        return processDiskWrite(event.getEventSize());
+        // if (nodeID == 115) {
+        //     std::cout << "Disk Load Before Write: " << diskUsed << std::endl;
+        // }
+        processDiskWrite(event.getEventSize());
+        // if (nodeID == 115) {
+        //     std::cout << "After Write: " << diskUsed << std::endl;
+        // }
+        return true;
     }
     else {
         return false;
