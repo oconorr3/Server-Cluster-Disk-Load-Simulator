@@ -1,31 +1,12 @@
 #include "loadbalancer.h"
 
+#include <ctime>
+#include <cstdlib>
 
- //Controller(int threads, int nodes, int nSize);
-LoadBalancer::LoadBalancer(LoadBalancerType type, int threads, int nodes, int nSize) 
-	: controller(threads, nodes, nSize) {
-	
-	balancerType = type;
-	numNodes = nodes;
+void seedRandomNumbers() {
+    srand(time(0));
 }
 
-//Create event and give it to the controller
-void LoadBalancer::createEvent(int bytes, EventType eventType) {
-	
-	if (balancerType == MACHINE_LEARNING) {
-		//make decision for nodeId based off ML information
-		
-	} else if (balancerType == BENCHMARK_RANDOM) {
-		controller.addEvent(Event(bytes, getRandomNodeId(), eventType));
-	} else {
-		
-		//who gives a hoot what we do in this case 
-		
-	}
+int generateNodeID() {
+    return rand() % numNodes;
 }
-
-//generate number between 0 and numNodes
-int LoadBalancer::getRandomNodeId() {
-	return rand() % numNodes;
-}
-

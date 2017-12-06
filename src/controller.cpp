@@ -231,3 +231,18 @@ void Controller::setReportInterval(int interval, int numSamples) {
         nodeList[i].setReportInterval(interval, numSamples);
     }
 }
+
+
+std::vector<int> Controller::exctractCurrentLoad() {
+    waitForResults();   // inefficient, but leaving it for now for saftey
+    
+    // Create vector containing current load on diskNodes
+    std::vector<int> diskLoad;
+
+    // Loop through nodes and grab load
+    for (int i = 0; i < numNodes; i++) {
+        diskLoad.push_back(nodeSize - nodeList[i].getDiskUsed());
+    }
+
+    return diskLoad;
+}

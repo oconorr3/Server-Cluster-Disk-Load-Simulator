@@ -41,6 +41,8 @@ class Controller {
 
 
         int getNodeValue(int index);
+
+        std::vector<int> exctractCurrentLoad();
         
         void resetController();
 
