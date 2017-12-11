@@ -13,5 +13,5 @@ def load_networkfile(network_file):
     return network
 
 def get_prediction(network, input):
-    print("[Python] SKLReceivedInput: %s" % input)
+    # print("[Python] SKLReceivedInput: %s" % input)
     return network.predict(input)[0]

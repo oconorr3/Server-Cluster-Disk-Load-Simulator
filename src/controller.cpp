@@ -124,7 +124,7 @@ void Controller::spawnThreads() {
 
     // Debug printing
     #ifdef DEBUG
-        std::cout << "numNodes: " << numNodes << ", numThreads: " << numThreads << ", range_size: " << range_size << std::endl;
+        std::cout << "Number of Nodes: " << numNodes << ", Number of Manager Threads: " << numThreads << ", Thread Range: " << range_size << " nodes" << std::endl;
     #endif
 
     int range_start = 0;
@@ -230,4 +230,19 @@ void Controller::setReportInterval(int interval, int numSamples) {
     for (int i = 0; i < numNodes; i++) {
         nodeList[i].setReportInterval(interval, numSamples);
     }
+}
+
+
+std::vector<int> Controller::extractCurrentLoad() {
+    //waitForResults();   // inefficient, but leaving it for now for saftey
+    
+    // Create vector containing current load on diskNodes
+    std::vector<int> diskLoad;
+
+    // Loop through nodes and grab load
+    for (int i = 0; i < numNodes; i++) {
+        diskLoad.push_back(nodeSize - nodeList[i].getDiskUsed());
+    }
+
+    return diskLoad;
 }
