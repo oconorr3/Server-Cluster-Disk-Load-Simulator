@@ -23,18 +23,13 @@ void BestFitMLBalancer::runPickle(std::string pickleFile, std::string networkFil
     // Initialize Machine Learning model
     // Sklearn ml_model; -> created in header, but may need initialized here instead
     ml_model.loadNetwork(networkFile);
-    int i = 0;
-    int count = 0;
-    while (count < 57150) {
-    //for (int i = 0; i < pickleLength; i++) {
+
+    for (int i = 0; i < pickleLength; i++) {
         PickleData element = ploader.itemAtIndex(pickleFile, i);
         if (element.isWrite) {
             nodeID = findPredictiveBestFit(ploader, pickleFile, element, i);
-            std::cout << "Allocation Size: " << element.size << ", Desination Node: " << nodeID << std::endl;
-            controller->addEvent(Event(element.size, nodeID, DISKWRITE, element.timestamp - time_start));
-            count++;    
+            controller->addEvent(Event(element.size, nodeID, DISKWRITE, element.timestamp - time_start)); 
         }
-        i++;
     }
 }
 
@@ -86,15 +81,6 @@ void BestFitMLBalancer::initializeDiscreteTime(PickleLoader ploader, std::string
     std::cout << "interval: " << sampleTimeInterval << std::endl;
     controller->setReportInterval(sampleTimeInterval, numSamples);
 }
-
-
-
-
-
-
-
-
-
 
 
 std::vector<int> BestFitMLBalancer::sizeFit(std::vector<int> nextRequests, std::vector<int> bins)

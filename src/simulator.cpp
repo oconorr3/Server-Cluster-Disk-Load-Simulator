@@ -13,9 +13,9 @@
 
 // For testing
 int main() {
-    Controller c(1, 1000, 2000000);
-    RoundRobinLBalancer lb(&c);
-    lb.runPickle("exclude/tracedata00.pkl",150);// "exclude/sgd-modhuber.sklnetwork.pkl", 150);
+    Controller c(4, 1000, 2000000);
+    BestFitMLBalancer lb(&c);
+    lb.runPickle("exclude/tracedata00.pkl", "exclude/sgd-modhuber.sklnetwork.pkl", 150);
 
     char file[] = "mlEndState.csv";
     c.printNodeValues(file);

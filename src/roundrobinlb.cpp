@@ -61,7 +61,7 @@ void RoundRobinLBalancer::runPickle(std::string pickleFile, int numSamples) {
     for (int i = 0; i < pickleLength; i++) {
         PickleData element = ploader.itemAtIndex(pickleFile, i);
         if (element.isWrite) {  
-            nodeID = i % numNodes;
+            nodeID = (nodeID + 1) % numNodes;
             controller->addEvent(Event(element.size, nodeID, DISKWRITE, element.timestamp - time_start));
         }
     }

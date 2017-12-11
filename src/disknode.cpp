@@ -33,6 +33,7 @@ void DiskNode::instantiateDiskNode(int diskSize, int nodeID, DataBank *databank)
  */
 bool DiskNode::processEvent(Event event) {
 
+    
     //std::cout << "HERE" << std::endl;
     // Update time counter
     if (!updateTime(event.getTimestamp())) {

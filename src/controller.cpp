@@ -124,7 +124,7 @@ void Controller::spawnThreads() {
 
     // Debug printing
     #ifdef DEBUG
-        std::cout << "numNodes: " << numNodes << ", numThreads: " << numThreads << ", range_size: " << range_size << std::endl;
+        std::cout << "Number of Nodes: " << numNodes << ", Number of Manager Threads: " << numThreads << ", Thread Range: " << range_size << " nodes" << std::endl;
     #endif
 
     int range_start = 0;
