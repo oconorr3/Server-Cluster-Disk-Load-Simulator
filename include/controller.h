@@ -19,6 +19,11 @@
 
 #define DEBUG //comment out to turn off debug mode
 
+#define DEFAULT_NUM_THREADS 4;
+#define DEFAULT_NUM_NODES 1000;
+#define DEFAULT_DISK_SIZE 2000000;
+#define DEFAULT_SAMPLE_NUM 150;
+
 // Definition of the Controller Class
 class Controller {
     public:
